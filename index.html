@@ -411,7 +411,7 @@ footer { text-align: center; font-family: var(--mono); font-size: .68rem; color:
       </div>
       <label class="slider-row" for="stefanMail">
         <span class="label">Stefanov mejl (za jedini dozvoljeni kanal)</span>
-        <input type="text" id="stefanMail" inputmode="email" autocomplete="off" placeholder="stefan@primer.com">
+        <input type="text" id="stefanMail" inputmode="email" autocomplete="off" placeholder="stefan@yoursidekick.us">
       </label>
       <div class="row">
         <button type="button" class="ghost" id="exportBtn">Izvezi podatke</button>
@@ -454,7 +454,7 @@ footer { text-align: center; font-family: var(--mono); font-size: .68rem; color:
 
 <script>
 (() => {
-  const VERSION = "1.5.1";
+  const VERSION = "1.6";
   const LEVELS = [
     "Budistički monah", "Iznenađujuće prijatan", "Podnošljiv", "Blago mrgodan", "Uzdiše bez razloga",
     "Odgovara jednom rečju", "Sve shvata levo", "„Nisam nervozan, super sam”", "Ne prilazi bez kafe",
@@ -512,12 +512,15 @@ footer { text-align: center; font-family: var(--mono); font-size: .68rem; color:
     { id: "dizel", name: "10 l dizel", sub: "Taman do Siljegovca" },
     { id: "siljegovac", name: "Povratna karta za dvoje do Siljegovca", sub: "Vikend na selu" },
     { id: "zdravija", name: "Zdravinja", sub: "Kad ništa drugo ne pali" },
+    { id: "ketamin", name: "Ketamin", sub: "Odvaja ga od problema" },
+    { id: "kgspid", name: "Kragujevački spid", sub: "Lokalni proizvod" },
   ];
   const FILTERS = [["sve", "Sve"], ["merenja", "Merenja"], ["izjave", "Izjave"], ["mere", "Mere"]];
   const LS_DATA = "nadrkometar.zapisi.v1";
   const LS_MODE = "nadrkometar.rezim";
   const LS_TAB = "nadrkometar.tab";
   const LS_MAIL = "nadrkometar.stefanMejl";
+  const STEFAN_MAIL = "stefan@yoursidekick.us";
   const LOCK_AT = 5.6;
   const MAIL_WINDOW = 12 * 3600000;
   const ICON = {
@@ -950,7 +953,7 @@ footer { text-align: center; font-family: var(--mono); font-size: .68rem; color:
   $("mailSend").addEventListener("click", () => {
     const subject = $("mailSubject").value.trim() || "Jedno pitanje";
     const body = $("mailBody").value;
-    const to = lsGet(LS_MAIL, "").trim();
+    const to = lsGet(LS_MAIL, STEFAN_MAIL).trim();
     add({ kind: "mejl", subject: subject.slice(0, 120) });
     $("mailSheet").hidden = true;
     const a = document.createElement("a");
@@ -958,8 +961,8 @@ footer { text-align: center; font-family: var(--mono); font-size: .68rem; color:
     a.click();
     snack(to ? "Mejl je spreman u aplikaciji za poštu. Jedini kanal je iskorišćen." : "Mejl je otvoren bez adrese; Stefanov mejl upiši u Dnevnik → Podaci. Kanal je iskorišćen.");
   });
-  $("stefanMail").value = lsGet(LS_MAIL, "");
-  $("stefanMail").addEventListener("change", () => { lsSet(LS_MAIL, $("stefanMail").value.trim()); snack("Stefanov mejl je sačuvan."); });
+  $("stefanMail").value = lsGet(LS_MAIL, STEFAN_MAIL);
+  $("stefanMail").addEventListener("change", () => { lsSet(LS_MAIL, $("stefanMail").value.trim() || STEFAN_MAIL); $("stefanMail").value = lsGet(LS_MAIL, STEFAN_MAIL); snack("Stefanov mejl je sačuvan."); });
 
   function renderAll() { renderTop(); renderLock(); renderStats(); renderLog(); renderPhrases(); }
 
