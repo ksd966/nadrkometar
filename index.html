@@ -127,7 +127,6 @@ button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 2px
 .phrase span { font-size: .78rem; color: var(--muted); line-height: 1.3; }
 .phrase.rare { border-style: dashed; border-color: var(--ok); }
 .phrase .cnt { font-family: var(--mono); font-size: .68rem; color: var(--muted); }
-.to-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .expand { border: 1px dashed var(--line); background: transparent; border-radius: 8px; padding: 10px; font-weight: 600; font-size: .9rem; }
 .verdict .note { font-size: .8rem; color: var(--muted); border-top: 1px dashed var(--line); padding-top: 6px; margin-top: 4px; }
 .periods { display: grid; gap: 8px; }
@@ -247,11 +246,6 @@ footer { text-align: center; font-family: var(--mono); font-size: .68rem; color:
 .snack button { border: 0; background: transparent; color: var(--signal); font-weight: 700; padding: 6px 8px; text-transform: uppercase; font-size: .8rem; letter-spacing: .04em; }
 .sheet { position: fixed; inset: 0; z-index: 40; background: rgba(10, 12, 14, .55); display: grid; align-items: end; }
 .sheet .panel { background: var(--panel); border-radius: 16px 16px 0 0; padding: 20px 16px calc(20px + env(safe-area-inset-bottom, 0px)); display: grid; gap: 14px; max-width: 640px; width: 100%; margin: 0 auto; }
-.who { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-.who button { border: 1px solid var(--line); background: var(--sunk); border-radius: 10px; padding: 14px 8px; display: grid; gap: 2px; justify-items: center; }
-.who button b { font-family: var(--display); font-size: 1.3rem; text-transform: uppercase; font-weight: 800; }
-.who button span { font-size: .72rem; color: var(--muted); }
-.who button[aria-pressed="true"] { border-color: var(--signal); background: var(--panel); box-shadow: inset 0 0 0 1px var(--signal); }
 .upd { position: fixed; left: 50%; transform: translateX(-50%); top: calc(10px + env(safe-area-inset-top, 0px)); z-index: 35;
   background: var(--ink); color: var(--panel); border: 0; border-radius: 999px; padding: 10px 16px; font-size: .88rem; box-shadow: 0 6px 24px rgba(0,0,0,.25); max-width: calc(100% - 32px); }
 .upd b { color: var(--signal); }
@@ -273,7 +267,7 @@ footer { text-align: center; font-family: var(--mono); font-size: .68rem; color:
     <section class="plate" aria-label="Trenutno stanje">
       <div class="top">
         <h1>Nadrkometar</h1>
-        <span class="serial">Objekat: Stefan · pozivni znak Mačak Fr</span>
+        <span class="serial">Objekat merenja: Stefan</span>
       </div>
       <div class="dial">
         <svg viewBox="0 0 400 222" role="img" aria-labelledby="gaugeTitle">
@@ -323,7 +317,6 @@ footer { text-align: center; font-family: var(--mono); font-size: .68rem; color:
         <h2 id="phTitle">Prevodilac sa Stefanovog</h2>
         <span class="hint" id="phHint">Stefan je upravo rekao nešto od ovoga? Dodirni i zabeleži. Svaka izjava pomera kazaljku.</span>
       </div>
-      <div class="to-row"><span class="label">Kome je rekao</span><div class="chips" id="toChips"></div></div>
       <div class="phrases" id="phrases"></div>
       <button type="button" class="expand" id="phMore"></button>
     </section>
@@ -397,7 +390,6 @@ footer { text-align: center; font-family: var(--mono); font-size: .68rem; color:
       <h3 id="topTitle">Najčešće</h3>
       <div style="display:grid;gap:8px"><span class="label">Uzroci</span><div class="bars" id="causeBars"></div></div>
       <div style="display:grid;gap:8px"><span class="label">Izjave</span><div class="bars" id="phraseBars"></div></div>
-      <div style="display:grid;gap:8px"><span class="label">Ko ga najviše nervira</span><div class="bars" id="targetBars"></div></div>
       <div style="display:grid;gap:8px"><span class="label">Mere</span><div class="bars" id="mereBars"></div></div>
       <button type="button" class="ghost" id="shareReport">Pošalji izveštaj u grupu</button>
     </section>
@@ -416,10 +408,6 @@ footer { text-align: center; font-family: var(--mono); font-size: .68rem; color:
       <div style="display:grid;gap:4px">
         <h3 id="dataTitle">Podaci i telefon</h3>
         <span class="hint">Zapisi se čuvaju samo na ovom telefonu. Da biste imali iste podatke, jedan izveze fajl i pošalje ga u grupu, a ostali ga uvezu. Uvoz spaja zapise i ne briše postojeće.</span>
-      </div>
-      <div class="slider-row">
-        <span class="label">Ko koristi ovaj telefon</span>
-        <button type="button" class="ghost" id="whoBtn" style="text-align:left"></button>
       </div>
       <label class="slider-row" for="stefanMail">
         <span class="label">Stefanov mejl (za jedini dozvoljeni kanal)</span>
@@ -449,21 +437,6 @@ footer { text-align: center; font-family: var(--mono); font-size: .68rem; color:
 
 <div class="snack" id="snack" role="status" aria-live="polite"><span class="msg" id="snackMsg"></span><button type="button" id="snackUndo" hidden>Poništi</button></div>
 
-<div class="sheet" id="whoSheet" hidden>
-  <div class="panel" role="dialog" aria-modal="true" aria-labelledby="whoTitle">
-    <div style="display:grid;gap:4px">
-      <h2 id="whoTitle">Ko drži ovaj telefon?</h2>
-      <span class="hint">Da bi se u dnevniku videlo ko je šta prijavio. Menja se kasnije u Dnevniku.</span>
-    </div>
-    <div class="who" id="whoList"></div>
-    <div class="slider-row">
-      <span class="label">Neko drugi</span>
-      <input type="text" id="whoOther" maxlength="24" placeholder="Upiši ime" autocomplete="nickname">
-    </div>
-    <button type="button" class="primary" id="whoSave">Sačuvaj</button>
-  </div>
-</div>
-
 <div class="sheet" id="mailSheet" hidden>
   <div class="panel" role="dialog" aria-modal="true" aria-labelledby="mailSheetTitle">
     <div style="display:grid;gap:4px">
@@ -481,11 +454,11 @@ footer { text-align: center; font-family: var(--mono); font-size: .68rem; color:
 
 <script>
 (() => {
-  const VERSION = "1.3";
+  const VERSION = "1.4";
   const LEVELS = [
     "Budistički monah", "Iznenađujuće prijatan", "Podnošljiv", "Blago mrgodan", "Uzdiše bez razloga",
     "Odgovara jednom rečju", "Sve shvata levo", "„Nisam nervozan, super sam”", "Ne prilazi bez kafe",
-    "Evakuisati kancelariju", "Nuklearni Mačak",
+    "Evakuisati kancelariju", "Nuklearni Stefan",
   ];
   const VERDICTS = [
     { max: 2, answer: "Da", why: "Slobodno. Dobar trenutak i za povišicu." },
@@ -521,7 +494,6 @@ footer { text-align: center; font-family: var(--mono); font-size: .68rem; color:
     { id: "haha", text: "Hahahaha", tr: "Zezanje radi. Imamo dokaz.", level: 2, rare: true },
   ];
   const RARE_MSG = { izvini: "Izvinjenje zabeleženo. Istorijski trenutak.", haha: "Smeh zabeležen. Zezanje i dalje jedino pali." };
-  const TARGETS = [["Joca", "Joci"], ["David", "Davidu"]];
   const PERIODS = [
     { name: "Jutro", from: 6, to: 11 }, { name: "Podne", from: 11, to: 14 }, { name: "Popodne", from: 14, to: 18 },
     { name: "Veče", from: 18, to: 24 }, { name: "Noć", from: 0, to: 6 },
@@ -535,14 +507,9 @@ footer { text-align: center; font-family: var(--mono); font-size: .68rem; color:
     { id: "mir", name: "Ostavljen na miru", sub: "Dokazano delotvorno" },
     { id: "odlozen", name: "Sastanak odložen", sub: "Za sutra, kao i uvek" },
   ];
-  const TEAM = [
-    { name: "Joca", sub: "prijavljuje" },
-    { name: "David", sub: "prijavljuje" },
-    { name: "Stefan", sub: "Mačak Fr" },
-  ];
   const FILTERS = [["sve", "Sve"], ["merenja", "Merenja"], ["izjave", "Izjave"], ["mere", "Mere"]];
   const LS_DATA = "nadrkometar.zapisi.v1";
-  const LS_NAME = "nadrkometar.ime";
+  const LS_MODE = "nadrkometar.rezim";
   const LS_TAB = "nadrkometar.tab";
   const LS_MAIL = "nadrkometar.stefanMejl";
   const LOCK_AT = 5.6;
@@ -576,7 +543,6 @@ footer { text-align: center; font-family: var(--mono); font-size: .68rem; color:
   const picked = new Set();
   let shown = 30;
   let filter = "sve";
-  let target = "";
   let phrasesOpen = false;
 
   /* ---------- Storage (samo ovaj telefon) ---------- */
@@ -594,10 +560,8 @@ footer { text-align: center; font-family: var(--mono); font-size: .68rem; color:
   }
   function save() { if (!lsSet(LS_DATA, JSON.stringify(entries))) snack("Čuvanje nije uspelo. Proveri da li je Safari u privatnom režimu.", { bad: true }); }
   const newId = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
-  function add(e) { const id = newId(); entries.unshift({ id, at: new Date().toISOString(), by: myName(), ...e }); sortDesc(entries); save(); renderAll(); buzz(); return id; }
+  function add(e) { const id = newId(); entries.unshift({ id, at: new Date().toISOString(), ...e }); sortDesc(entries); save(); renderAll(); buzz(); return id; }
   function remove(id) { entries = entries.filter((e) => e.id !== id); save(); renderAll(); }
-  const myName = () => lsGet(LS_NAME, "").trim();
-  const iAmStefan = () => /^stefan$/i.test(myName());
 
   window.addEventListener("storage", (ev) => { if (ev.key === LS_DATA) { load(); renderAll(); } });
   document.addEventListener("visibilitychange", () => { if (!document.hidden) { renderTop(); renderLock(); } });
@@ -670,7 +634,6 @@ footer { text-align: center; font-family: var(--mono); font-size: .68rem; color:
     return d === 1 ? "juče" : `pre ${d} dana`;
   }
   const stamp = (iso) => new Date(iso).toLocaleString("sr-Latn-RS", { weekday: "short", day: "numeric", month: "numeric", hour: "2-digit", minute: "2-digit" });
-  const who = (e) => e.by || "neko iz firme";
   const ageMs = (e) => Date.now() - new Date(e.at).getTime();
 
   function computeStats() {
@@ -750,7 +713,6 @@ footer { text-align: center; font-family: var(--mono); font-size: .68rem; color:
     renderBadges(s);
     renderBars("causeBars", readings().flatMap((e) => e.causes || []), "Još nema zabeleženih uzroka");
     renderBars("phraseBars", entries.filter((e) => e.kind === "izjava").map((e) => "„" + ((phraseById(e.phrase) || {}).text || e.phrase) + "”"), "Još nijedna izjava");
-    renderBars("targetBars", entries.filter((e) => e.kind === "izjava" && e.to).map((e) => e.to), "Izaberi „Kome je rekao” kad beležiš izjavu");
     renderPeriods();
     renderBars("mereBars", entries.filter((e) => e.kind === "mera").map((e) => (meraById(e.mera) || {}).name || e.mera), "Još nijedna mera nije preduzeta");
   }
@@ -885,12 +847,12 @@ footer { text-align: center; font-family: var(--mono); font-size: .68rem; color:
         lv.className = "lv tag";
         lv.textContent = "mejl";
         info.children[0].textContent = `Iskorišćen jedini mejl: „${e.subject}”`;
-        info.children[1].textContent = `${stamp(e.at)} · ${who(e)}`;
+        info.children[1].textContent = stamp(e.at);
       } else if (e.kind === "mera") {
         lv.className = "lv tag";
         lv.textContent = "mera";
         info.children[0].textContent = (meraById(e.mera) || {}).name || e.mera;
-        info.children[1].textContent = `${stamp(e.at)} · ${who(e)}`;
+        info.children[1].textContent = stamp(e.at);
       } else {
         lv.className = "lv";
         lv.style.setProperty("--lvl", `var(${lvlColorVar(e.level)})`);
@@ -898,11 +860,11 @@ footer { text-align: center; font-family: var(--mono); font-size: .68rem; color:
         if (e.kind === "izjava") {
           const p = phraseById(e.phrase) || { text: e.phrase, tr: "" };
           info.children[0].textContent = `„${p.text}”`;
-          info.children[1].textContent = `${stamp(e.at)} · ${e.to ? "rekao " + (TARGETS.find((t) => t[0] === e.to) || [e.to, e.to])[1] : "izjava"}, zabeležio ${who(e)}`;
+          info.children[1].textContent = `${stamp(e.at)} · izjava`;
           if (p.tr) addLine("tags", "Prevod: " + p.tr);
         } else {
           info.children[0].textContent = LEVELS[e.level];
-          info.children[1].textContent = `${stamp(e.at)} · ${e.kind === "self" ? "samoprocena" : "prijavio " + who(e)}`;
+          info.children[1].textContent = `${stamp(e.at)} · ${e.kind === "self" ? "samoprocena" : "prijava kolega"}`;
           if (e.causes && e.causes.length) addLine("tags", "Uzrok: " + e.causes.join(", "));
           if (e.note) addLine("note", e.note);
         }
@@ -926,14 +888,6 @@ footer { text-align: center; font-family: var(--mono); font-size: .68rem; color:
       el.appendChild(row);
     });
     $("more").hidden = list.length <= shown;
-  }
-
-  function renderWho() {
-    const n = myName();
-    $("whoBtn").textContent = n ? `${n} · promeni` : "Nije izabrano · izaberi";
-    $("phHint").textContent = iAmStefan()
-      ? "Ti si Stefan. Budi iskren i zabeleži šta si rekao. Svaka izjava pomera kazaljku."
-      : "Stefan je upravo rekao nešto od ovoga? Dodirni i zabeleži. Svaka izjava pomera kazaljku.";
   }
 
   /* ---------- Zaključavanje kanala ---------- */
@@ -981,7 +935,7 @@ footer { text-align: center; font-family: var(--mono); font-size: .68rem; color:
     const { cur, locked, mailUsed } = lockState();
     if (!locked || mailUsed) return;
     $("mailSubject").value = "Jedno pitanje (jedino dozvoljeno)";
-    $("mailBody").value = `Poštovani Stefane,\n\nu skladu sa Protokolom o komunikaciji (Nadrkometar, očitavanje ${fmt1(cur.value)} °N), obraćam Vam se jedinim preostalim kanalom.\n\n[Ovde jedno pitanje. Jedno.]\n\nUnapred hvala na strpljenju.\n\nSrdačan pozdrav,\n${myName() || "Kolega"}`;
+    $("mailBody").value = `Poštovani Stefane,\n\nu skladu sa Protokolom o komunikaciji (Nadrkometar, očitavanje ${fmt1(cur.value)} °N), obraćam Vam se jedinim preostalim kanalom.\n\n[Ovde jedno pitanje. Jedno.]\n\nUnapred hvala na strpljenju.\n\nSrdačan pozdrav,\nKolega`;
     $("mailSheet").hidden = false;
   }
   $("mailBtn").addEventListener("click", openMail);
@@ -1001,19 +955,9 @@ footer { text-align: center; font-family: var(--mono); font-size: .68rem; color:
   $("stefanMail").value = lsGet(LS_MAIL, "");
   $("stefanMail").addEventListener("change", () => { lsSet(LS_MAIL, $("stefanMail").value.trim()); snack("Stefanov mejl je sačuvan."); });
 
-  function renderAll() { renderTop(); renderLock(); renderStats(); renderLog(); renderWho(); renderPhrases(); }
+  function renderAll() { renderTop(); renderLock(); renderStats(); renderLog(); renderPhrases(); }
 
   /* ---------- Stanje: izjave i mere ---------- */
-  TARGETS.forEach(([name, dative]) => {
-    const b = document.createElement("button");
-    b.type = "button"; b.className = "chip"; b.textContent = dative;
-    b.setAttribute("aria-pressed", "false");
-    b.addEventListener("click", () => {
-      target = target === name ? "" : name;
-      document.querySelectorAll("#toChips .chip").forEach((x) => x.setAttribute("aria-pressed", x === b && target === name));
-    });
-    $("toChips").appendChild(b);
-  });
   // Najčešće izjave idu napred; retke uvek ostaju vidljive na kraju prvog reda
   function renderPhrases() {
     const counts = {};
@@ -1033,7 +977,6 @@ footer { text-align: center; font-family: var(--mono); font-size: .68rem; color:
       if (counts[p.id]) { const c = document.createElement("span"); c.className = "cnt"; c.textContent = `${counts[p.id]}×`; b.appendChild(c); }
       b.addEventListener("click", () => {
         const e = { kind: "izjava", phrase: p.id, level: p.level };
-        if (target) e.to = target;
         const id = add(e);
         snack(RARE_MSG[p.id] || `Zabeleženo. Prevod: ${p.tr}`, { undo: () => remove(id) });
       });
@@ -1063,6 +1006,7 @@ footer { text-align: center; font-family: var(--mono); font-size: .68rem; color:
   }
   function setMode(m) {
     mode = m;
+    lsSet(LS_MODE, m);
     $("modeSelf").setAttribute("aria-pressed", m === "self");
     $("modeReport").setAttribute("aria-pressed", m === "report");
     $("submit").textContent = m === "self" ? "Upiši očitavanje" : "Pošalji prijavu";
@@ -1080,7 +1024,7 @@ footer { text-align: center; font-family: var(--mono); font-size: .68rem; color:
   $("modeReport").addEventListener("click", () => setMode("report"));
   $("submit").addEventListener("click", () => {
     const level = +$("lvl").value;
-    const id = add({ kind: mode, level, causes: [...picked], note: $("note").value.trim().slice(0, 280), by: mode === "self" ? "Stefan" : myName() });
+    const id = add({ kind: mode, level, causes: [...picked], note: $("note").value.trim().slice(0, 280), });
     $("note").value = "";
     picked.clear();
     document.querySelectorAll("#causes .chip").forEach((b) => b.setAttribute("aria-pressed", "false"));
@@ -1102,48 +1046,11 @@ footer { text-align: center; font-family: var(--mono); font-size: .68rem; color:
   });
   $("more").addEventListener("click", () => { shown += 30; renderLog(); });
 
-  /* ---------- Ko drži telefon ---------- */
-  let whoPick = "";
-  function openWho() {
-    whoPick = myName();
-    const list = $("whoList");
-    list.textContent = "";
-    TEAM.forEach((t) => {
-      const b = document.createElement("button");
-      b.type = "button";
-      b.innerHTML = `<b></b><span></span>`;
-      b.children[0].textContent = t.name; b.children[1].textContent = t.sub;
-      b.setAttribute("aria-pressed", whoPick.toLowerCase() === t.name.toLowerCase());
-      b.addEventListener("click", () => {
-        whoPick = t.name; $("whoOther").value = "";
-        list.querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", x === b));
-      });
-      list.appendChild(b);
-    });
-    $("whoOther").value = TEAM.some((t) => t.name.toLowerCase() === whoPick.toLowerCase()) ? "" : whoPick;
-    $("whoSheet").hidden = false;
-  }
-  $("whoOther").addEventListener("input", () => {
-    whoPick = $("whoOther").value.trim();
-    $("whoList").querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", "false"));
-  });
-  $("whoSave").addEventListener("click", () => {
-    if (!whoPick) { snack("Izaberi ime ili upiši svoje.", { bad: true }); return; }
-    lsSet(LS_NAME, whoPick);
-    $("whoSheet").hidden = true;
-    setMode(iAmStefan() ? "self" : "report");
-    renderWho();
-    snack(`Ovaj telefon koristi ${whoPick}.`);
-  });
-  $("whoSheet").addEventListener("click", (ev) => { if (ev.target === $("whoSheet") && myName()) $("whoSheet").hidden = true; });
-  $("whoBtn").addEventListener("click", openWho);
-
   /* ---------- Izvoz, uvoz, izveštaj ---------- */
   $("exportBtn").addEventListener("click", async () => {
-    const payload = JSON.stringify({ app: "nadrkometar", version: 1, exportedAt: new Date().toISOString(), from: myName(), entries }, null, 1);
+    const payload = JSON.stringify({ app: "nadrkometar", version: 1, exportedAt: new Date().toISOString(), entries }, null, 1);
     const d = new Date();
-    const slug = myName().toLowerCase().normalize("NFD").replace(/[^a-z0-9]+/g, "");
-    const name = `nadrkometar-${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}${slug ? "-" + slug : ""}.json`;
+    const name = `nadrkometar-${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}.json`;
     const file = new File([payload], name, { type: "application/json" });
     if (navigator.canShare && navigator.canShare({ files: [file] })) {
       try { await navigator.share({ files: [file], title: "Nadrkometar podaci" }); snack(`Izvezeno ${entries.length} zapisa.`); return; }
@@ -1230,11 +1137,10 @@ footer { text-align: center; font-family: var(--mono); font-size: .68rem; color:
   $("ver").textContent = VERSION;
   drawGauge();
   setLevelUI();
-  setMode(myName() && !iAmStefan() ? "report" : "self");
+  setMode(lsGet(LS_MODE, "report") === "self" ? "self" : "report");
   load();
   renderAll();
   showTab(lsGet(LS_TAB, "stanje"), { scroll: false });
-  if (!myName()) openWho();
   setInterval(() => { renderTop(); renderLock(); }, 60000);
   // Traži od browsera da podatke ne briše (iOS/Android čuvaju ih trajno za instaliranu aplikaciju)
   try { navigator.storage && navigator.storage.persist && navigator.storage.persist(); } catch {}
