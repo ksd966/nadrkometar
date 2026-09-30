@@ -1,0 +1,1244 @@
+<!doctype html>
+<html lang="sr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Nadrkometar</title>
+<meta name="description" content="Merač Stefanovog raspoloženja: samoprocene, prijave kolega, prevodilac sa Stefanovog i statistika.">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#EEF0F2" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#111317" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Nadrkometar">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="format-detection" content="telephone=no">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="apple-touch-startup-image" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" href="splash/splash-375x667@2.png">
+<link rel="apple-touch-startup-image" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="splash/splash-375x812@3.png">
+<link rel="apple-touch-startup-image" media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="splash/splash-390x844@3.png">
+<link rel="apple-touch-startup-image" media="(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="splash/splash-393x852@3.png">
+<link rel="apple-touch-startup-image" media="(device-width: 402px) and (device-height: 874px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="splash/splash-402x874@3.png">
+<link rel="apple-touch-startup-image" media="(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="splash/splash-414x736@3.png">
+<link rel="apple-touch-startup-image" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" href="splash/splash-414x896@2.png">
+<link rel="apple-touch-startup-image" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="splash/splash-414x896@3.png">
+<link rel="apple-touch-startup-image" media="(device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="splash/splash-428x926@3.png">
+<link rel="apple-touch-startup-image" media="(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="splash/splash-430x932@3.png">
+<link rel="apple-touch-startup-image" media="(device-width: 440px) and (device-height: 956px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="splash/splash-440x956@3.png">
+<link rel="preload" as="image" href="img/stefan.webp">
+<link rel="stylesheet" href="fonts/fonts.css">
+<style>
+/* Layout: aplikacija sa donjom navigacijom u 4 taba. Manometar sa Stefanom je potpis; sve ostalo je mirna kontrolna tabla. */
+:root {
+  --bg: #eef0f2;
+  --panel: #ffffff;
+  --sunk: #f5f6f8;
+  --ink: #16191d;
+  --muted: #5d6670;
+  --line: #d9dde2;
+  --steel: #22272d;
+  --steel-ink: #eef0f2;
+  --steel-muted: #9aa4ae;
+  --signal: #d97a08;
+  --signal-ink: #1a1205;
+  --ok: #2f8a4c;
+  --warn: #c99700;
+  --hot: #d2451e;
+  --crit: #a31919;
+  --chip: #e6e9ed;
+  --shadow: 0 1px 2px rgba(22, 25, 29, .06), 0 8px 24px rgba(22, 25, 29, .06);
+  --display: "Big Shoulders Display", "Arial Narrow", Impact, sans-serif;
+  --body: "Archivo", -apple-system, "Helvetica Neue", Arial, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+  --tabbar: 64px;
+  --r: 10px;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #111317; --panel: #1a1e23; --sunk: #15181c; --ink: #e9ecef; --muted: #98a1ab; --line: #2b3137;
+    --steel: #0b0d10; --signal: #f0932b; --ok: #4fb46d; --warn: #e8bb2c; --hot: #ef6a41; --crit: #e0443a; --chip: #252a30;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .3);
+    color-scheme: dark;
+  }
+}
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+[hidden] { display: none !important; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 15px; line-height: 1.5;
+  padding-top: env(safe-area-inset-top, 0px); padding-bottom: calc(var(--tabbar) + env(safe-area-inset-bottom, 0px) + 24px); }
+.wrap { max-width: 640px; margin: 0 auto; padding-inline: max(16px, env(safe-area-inset-left, 0px)); padding-block: 12px 8px; }
+.view { display: grid; gap: 14px; }
+h1, h2, h3 { font-family: var(--display); text-transform: uppercase; letter-spacing: .02em; margin: 0; text-wrap: balance; line-height: 1; }
+h2 { font-size: 1.55rem; font-weight: 800; }
+h3 { font-size: 1.15rem; font-weight: 800; }
+.label { font-family: var(--mono); font-size: .7rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+.hint { color: var(--muted); font-size: .88rem; }
+button { font: inherit; color: inherit; cursor: pointer; }
+button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 2px solid var(--signal); outline-offset: 2px; }
+.head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+
+/* ---------- Plate: manometar sa Stefanom ---------- */
+.plate { background: var(--steel); color: var(--steel-ink); border-radius: var(--r); padding: 14px 14px 12px; display: grid; gap: 2px; position: relative; overflow: hidden; }
+.plate .top { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.plate h1 { font-size: 2rem; font-weight: 900; color: #fff; }
+.plate .serial { font-family: var(--mono); font-size: .66rem; color: var(--steel-muted); letter-spacing: .08em; text-transform: uppercase; }
+.dial { position: relative; width: 100%; max-width: 440px; margin: 4px auto 0; }
+.dial svg { width: 100%; display: block; }
+.dial text { font-family: var(--mono); }
+#marker { transition: transform 1.2s cubic-bezier(.3, 1.4, .5, 1); transform-origin: 200px 200px; transform: rotate(-90deg); }
+.face { position: absolute; left: 30%; width: 40%; bottom: 9.9%; aspect-ratio: 600 / 483; transform-origin: 50% 100%; }
+.face img { width: 100%; height: 100%; display: block; transition: filter .8s; }
+.face .tint { position: absolute; inset: 0; background: var(--hot); opacity: var(--tint, 0); mix-blend-mode: multiply; transition: opacity .8s;
+  -webkit-mask: url(img/stefan.webp) center / 100% 100% no-repeat; mask: url(img/stefan.webp) center / 100% 100% no-repeat; }
+.face .steam { position: absolute; top: 24%; width: 15%; aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle, rgba(255,255,255,.75), rgba(255,255,255,0) 70%); opacity: 0; pointer-events: none; }
+.face .steam.l { left: 20%; }
+.face .steam.r { right: 20%; }
+.face[data-band="hot"] .steam, .face[data-band="boom"] .steam { animation: steam 1.8s ease-out infinite; }
+.face[data-band="hot"] .steam.r, .face[data-band="boom"] .steam.r { animation-delay: .9s; }
+.face[data-band="boom"] { animation: shake .35s linear infinite; }
+.face[data-band="boom"] img { filter: saturate(1.4) contrast(1.05); }
+.face[data-band="calm"] img { filter: saturate(1.05) brightness(1.03); }
+.face .zzz { position: absolute; right: -8%; top: 4%; font-family: var(--display); font-weight: 800; color: #9fe0b1; font-size: 1rem; letter-spacing: .06em; text-transform: uppercase; opacity: 0; }
+.face[data-band="calm"] .zzz { opacity: 1; animation: float 3s ease-in-out infinite; }
+@keyframes steam { 0% { transform: translateY(0) scale(.5); opacity: 0; } 25% { opacity: .9; } 100% { transform: translateY(-120%) scale(1.6); opacity: 0; } }
+@keyframes shake { 0%, 100% { transform: translateX(0) rotate(0); } 25% { transform: translateX(-2px) rotate(-1deg); } 75% { transform: translateX(2px) rotate(1deg); } }
+@keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+.readout { display: flex; justify-content: center; align-items: baseline; gap: 6px; }
+.readout .num { font-family: var(--display); font-weight: 900; font-size: 3.4rem; line-height: 1; color: #fff; font-variant-numeric: tabular-nums; }
+.readout .unit { font-family: var(--mono); color: var(--steel-muted); font-size: .85rem; }
+.status { text-align: center; font-family: var(--display); font-weight: 800; font-size: 1.35rem; text-transform: uppercase; color: var(--lvl, #fff); line-height: 1.1; }
+.fresh { text-align: center; font-family: var(--mono); font-size: .7rem; color: var(--steel-muted); }
+
+/* ---------- Kartice ---------- */
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 16px; display: grid; gap: 14px; box-shadow: var(--shadow); }
+.verdict { display: grid; grid-template-columns: 8px 1fr; padding: 0; overflow: hidden; gap: 0; }
+.verdict .stripe { background: var(--lvl, var(--muted)); }
+.verdict .body { padding: 14px 16px; display: grid; gap: 4px; min-width: 0; }
+.verdict .answer { font-family: var(--display); font-weight: 900; font-size: 2.1rem; line-height: 1; text-transform: uppercase; color: var(--lvl, var(--ink)); }
+.verdict .why { font-size: .92rem; }
+
+.phrases { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
+.phrase { border: 1px solid var(--line); background: var(--sunk); border-radius: 8px; padding: 10px 12px; text-align: left; display: grid; gap: 4px; align-content: start; transition: border-color .15s, transform .1s; }
+.phrase:active { transform: scale(.98); border-color: var(--signal); }
+.phrase q { font-weight: 600; quotes: "„" "”"; line-height: 1.3; }
+.phrase span { font-size: .78rem; color: var(--muted); line-height: 1.3; }
+.phrase.rare { border-style: dashed; border-color: var(--ok); }
+.phrase .cnt { font-family: var(--mono); font-size: .68rem; color: var(--muted); }
+.to-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.expand { border: 1px dashed var(--line); background: transparent; border-radius: 8px; padding: 10px; font-weight: 600; font-size: .9rem; }
+.verdict .note { font-size: .8rem; color: var(--muted); border-top: 1px dashed var(--line); padding-top: 6px; margin-top: 4px; }
+.periods { display: grid; gap: 8px; }
+.period { display: grid; grid-template-columns: 7.4rem 1fr 2.6rem; gap: 10px; align-items: center; font-size: .88rem; }
+.period .track { height: 12px; background: var(--chip); border-radius: 4px; overflow: hidden; }
+.period .fill { height: 100%; border-radius: 4px; }
+.period .n { font-family: var(--mono); text-align: right; color: var(--muted); font-size: .8rem; font-variant-numeric: tabular-nums; }
+.period > span:first-child { white-space: nowrap; }
+.period small { font-family: var(--mono); font-size: .7rem; color: var(--muted); margin-left: 4px; }
+.period.best > span:first-child { font-weight: 700; }
+.claim { border-left: 3px solid var(--line); padding-left: 10px; display: grid; gap: 2px; }
+.claim q { font-style: italic; quotes: "„" "”"; }
+.claim span { font-size: .78rem; color: var(--muted); }
+.verdict-line { font-weight: 600; }
+.lock { display: grid; gap: 12px; }
+.lock.on { border-color: var(--crit); box-shadow: 0 0 0 1px var(--crit) inset, var(--shadow); }
+.lock .state { display: flex; align-items: flex-start; gap: 10px; }
+.lock .state .dot { margin-top: 7px; }
+.lock .state b { font-family: var(--display); font-weight: 900; font-size: 1.5rem; text-transform: uppercase; line-height: 1; }
+.lock.on .state b { color: var(--crit); }
+.lock .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--ok); flex: none; }
+.lock.on .dot { background: var(--crit); animation: pulse 1.4s ease-in-out infinite; }
+@keyframes pulse { 50% { opacity: .3; } }
+.channels { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.channel { border: 1px solid var(--line); background: var(--sunk); border-radius: 8px; padding: 10px 8px; display: grid; justify-items: center; gap: 4px; font-size: .82rem; font-weight: 600; text-align: center; }
+.channel svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.channel small { font-family: var(--mono); font-size: .62rem; font-weight: 400; color: var(--ok); text-transform: uppercase; letter-spacing: .06em; }
+.lock.on .channel { color: var(--muted); background: repeating-linear-gradient(135deg, var(--sunk) 0 8px, var(--chip) 8px 16px); }
+.lock.on .channel small { color: var(--crit); }
+.channel.denied { animation: deny .35s linear; }
+@keyframes deny { 25% { transform: translateX(-4px); } 75% { transform: translateX(4px); } }
+.mailbtn { border: 2px solid var(--ink); background: var(--panel); border-radius: 8px; padding: 12px 14px; display: flex; justify-content: space-between; align-items: center; gap: 12px; text-align: left; }
+.mailbtn b { font-weight: 700; }
+.mailbtn span { font-size: .8rem; color: var(--muted); display: block; }
+.mailbtn .left { font-family: var(--display); font-weight: 900; font-size: 1.8rem; line-height: 1; }
+.mailbtn:disabled { opacity: .55; cursor: default; }
+.lock .fine { font-size: .76rem; color: var(--muted); }
+
+.mere { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; }
+.mere button { border: 1px solid var(--line); background: transparent; border-radius: 8px; padding: 10px 12px; text-align: left; display: grid; gap: 2px; }
+.mere button:active { border-color: var(--ok); transform: scale(.98); }
+.mere b { font-weight: 600; }
+.mere span { font-size: .76rem; color: var(--muted); }
+
+/* ---------- Upis ---------- */
+.seg { display: grid; grid-template-columns: 1fr 1fr; background: var(--chip); border-radius: 8px; padding: 3px; gap: 3px; }
+.seg button { border: 0; background: transparent; padding: 9px 8px; font-weight: 600; border-radius: 6px; font-size: .92rem; }
+.seg button[aria-pressed="true"] { background: var(--panel); box-shadow: 0 1px 3px rgba(0,0,0,.12); }
+.slider-row { display: grid; gap: 6px; }
+.slider-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.slider-head .val { font-family: var(--display); font-weight: 900; font-size: 3rem; line-height: 1; font-variant-numeric: tabular-nums; color: var(--lvl); min-width: 2ch; }
+.slider-head .desc { font-weight: 600; text-align: right; min-width: 0; font-size: 1.02rem; }
+input[type=range] { width: 100%; accent-color: var(--lvl, var(--signal)); height: 34px; margin: 0; }
+.ticks { display: flex; justify-content: space-between; font-family: var(--mono); font-size: .68rem; color: var(--muted); padding-inline: 4px; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { border: 1px solid var(--line); background: var(--chip); border-radius: 999px; padding: 7px 12px; font-size: .86rem; }
+.chip[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--panel); font-weight: 600; }
+textarea, input[type=text] { width: 100%; font: inherit; font-size: 16px; border: 1px solid var(--line); background: var(--sunk); color: var(--ink); border-radius: 8px; padding: 10px 12px; }
+textarea { resize: vertical; min-height: 70px; }
+.primary { background: var(--signal); color: var(--signal-ink); border: 0; border-radius: 8px; padding: 14px; font-family: var(--display); font-weight: 800; font-size: 1.3rem; text-transform: uppercase; letter-spacing: .03em; }
+.primary:active { transform: scale(.99); }
+.ghost { border: 1px solid var(--line); background: transparent; border-radius: 8px; padding: 11px 12px; font-weight: 600; }
+.row { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 8px; }
+
+/* ---------- Izveštaj ---------- */
+.stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+.stat { background: var(--panel); padding: 12px; display: grid; gap: 4px; min-width: 0; align-content: start; }
+.stat .big { font-family: var(--display); font-weight: 900; font-size: 2rem; line-height: 1; font-variant-numeric: tabular-nums; }
+.stat .sub { font-size: .8rem; color: var(--muted); line-height: 1.35; }
+#chart { width: 100%; height: auto; display: block; }
+#chart text { font-family: var(--mono); font-size: 11px; fill: var(--muted); }
+.bars { display: grid; gap: 8px; }
+.bar { display: grid; grid-template-columns: minmax(0, 1.2fr) 1fr 2rem; gap: 10px; align-items: center; font-size: .86rem; }
+.bar > span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.bar .track { height: 8px; background: var(--chip); border-radius: 4px; overflow: hidden; }
+.bar .fill { height: 100%; background: var(--signal); border-radius: 4px; }
+.bar .n { font-family: var(--mono); text-align: right; color: var(--muted); }
+.badges { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.badge { border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; display: grid; gap: 2px; min-width: 0; align-content: start; }
+.badge .n { font-family: var(--display); font-weight: 900; font-size: 1.6rem; line-height: 1; font-variant-numeric: tabular-nums; }
+.badge b { font-weight: 600; font-size: .9rem; }
+.badge span { font-size: .76rem; color: var(--muted); line-height: 1.3; }
+.badge.on { border-color: var(--ok); }
+.badge.on .n { color: var(--ok); }
+
+/* ---------- Dnevnik ---------- */
+.log { display: grid; }
+.entry { display: grid; grid-template-columns: 2.6rem 1fr auto; gap: 12px; padding-block: 12px; border-top: 1px solid var(--line); align-items: start; }
+.entry:first-child { border-top: 0; }
+.entry .lv { font-family: var(--display); font-weight: 900; font-size: 1.8rem; line-height: 1; text-align: center; color: var(--lvl); font-variant-numeric: tabular-nums; }
+.entry .lv.tag { font-size: .66rem; font-family: var(--mono); padding-top: 6px; text-transform: uppercase; letter-spacing: .04em; color: var(--ok); }
+.entry .meta { font-family: var(--mono); font-size: .7rem; color: var(--muted); }
+.entry .what { font-weight: 600; }
+.entry .note { font-size: .9rem; overflow-wrap: anywhere; }
+.entry .tags { font-size: .8rem; color: var(--muted); }
+.entry .del { border: 0; background: transparent; color: var(--muted); font-family: var(--mono); font-size: .7rem; padding: 6px 8px; border-radius: 6px; }
+.entry .del.arm { background: var(--crit); color: #fff; }
+.empty { text-align: center; padding: 20px 8px; color: var(--muted); display: grid; gap: 4px; }
+.empty b { color: var(--ink); font-family: var(--display); font-size: 1.3rem; text-transform: uppercase; }
+.more { border: 1px solid var(--line); background: transparent; border-radius: 8px; padding: 9px; font-size: .88rem; }
+footer { text-align: center; font-family: var(--mono); font-size: .68rem; color: var(--muted); padding-top: 6px; }
+
+/* ---------- Tab bar, snackbar, sheet ---------- */
+.tabbar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; background: var(--panel); border-top: 1px solid var(--line);
+  padding-bottom: env(safe-area-inset-bottom, 0px); display: grid; grid-template-columns: repeat(4, 1fr); }
+.tab { border: 0; background: transparent; height: var(--tabbar); display: grid; justify-items: center; align-content: center; gap: 3px; color: var(--muted); font-size: .7rem; font-weight: 600; letter-spacing: .02em; position: relative; }
+.tab svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.tab[aria-selected="true"] { color: var(--ink); }
+.tab[aria-selected="true"]::before { content: ""; position: absolute; top: 0; left: 30%; right: 30%; height: 3px; border-radius: 0 0 3px 3px; background: var(--signal); }
+.tab.add svg { stroke: var(--signal); }
+.snack { position: fixed; left: 50%; transform: translate(-50%, 20px); bottom: calc(var(--tabbar) + env(safe-area-inset-bottom, 0px) + 12px); z-index: 30;
+  background: var(--ink); color: var(--panel); border-radius: 10px; padding: 10px 10px 10px 14px; display: flex; align-items: center; gap: 12px;
+  width: min(560px, calc(100% - 32px)); box-shadow: 0 8px 28px rgba(0,0,0,.28); opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s; font-size: .9rem; }
+.snack.show { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
+.snack.bad { background: var(--crit); color: #fff; }
+.snack .msg { flex: 1; min-width: 0; padding-block: 4px; }
+.snack button { border: 0; background: transparent; color: var(--signal); font-weight: 700; padding: 6px 8px; text-transform: uppercase; font-size: .8rem; letter-spacing: .04em; }
+.sheet { position: fixed; inset: 0; z-index: 40; background: rgba(10, 12, 14, .55); display: grid; align-items: end; }
+.sheet .panel { background: var(--panel); border-radius: 16px 16px 0 0; padding: 20px 16px calc(20px + env(safe-area-inset-bottom, 0px)); display: grid; gap: 14px; max-width: 640px; width: 100%; margin: 0 auto; }
+.who { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.who button { border: 1px solid var(--line); background: var(--sunk); border-radius: 10px; padding: 14px 8px; display: grid; gap: 2px; justify-items: center; }
+.who button b { font-family: var(--display); font-size: 1.3rem; text-transform: uppercase; font-weight: 800; }
+.who button span { font-size: .72rem; color: var(--muted); }
+.who button[aria-pressed="true"] { border-color: var(--signal); background: var(--panel); box-shadow: inset 0 0 0 1px var(--signal); }
+.upd { position: fixed; left: 50%; transform: translateX(-50%); top: calc(10px + env(safe-area-inset-top, 0px)); z-index: 35;
+  background: var(--ink); color: var(--panel); border: 0; border-radius: 999px; padding: 10px 16px; font-size: .88rem; box-shadow: 0 6px 24px rgba(0,0,0,.25); max-width: calc(100% - 32px); }
+.upd b { color: var(--signal); }
+@media (prefers-reduced-motion: reduce) {
+  #marker, .face img, .face .tint { transition: none; }
+  .face, .face .steam, .face .zzz { animation: none !important; }
+}
+@media (max-width: 380px) {
+  .phrases, .mere { grid-template-columns: 1fr 1fr; }
+  .verdict .answer { font-size: 1.8rem; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ================= STANJE ================= -->
+  <main class="view" id="view-stanje" aria-label="Stanje">
+    <section class="plate" aria-label="Trenutno stanje">
+      <div class="top">
+        <h1>Nadrkometar</h1>
+        <span class="serial">Objekat: Stefan · pozivni znak Mačak Fr</span>
+      </div>
+      <div class="dial">
+        <svg viewBox="0 0 400 222" role="img" aria-labelledby="gaugeTitle">
+          <title id="gaugeTitle">Skala nadrkanosti od 0 do 10</title>
+          <g id="arcs"></g>
+          <g id="ticks"></g>
+          <line x1="40" y1="200" x2="360" y2="200" stroke="#3a4148" stroke-width="2"></line>
+          <g id="marker">
+            <rect x="196" y="28" width="8" height="28" rx="2" fill="#ffffff" stroke="#0b0d10" stroke-width="2"></rect>
+            <polygon points="200,68 193,57 207,57" fill="#ffffff"></polygon>
+          </g>
+          <text x="40" y="218" fill="#9aa4ae" font-size="10" text-anchor="middle">ZEN</text>
+          <text x="360" y="218" fill="#9aa4ae" font-size="10" text-anchor="middle">BOOM</text>
+        </svg>
+        <div class="face" id="face" data-band="none">
+          <img src="img/stefan.webp" alt="Stefan" width="600" height="483">
+          <div class="tint"></div>
+          <i class="steam l"></i><i class="steam r"></i>
+          <span class="zzz" aria-hidden="true">zen</span>
+        </div>
+      </div>
+      <div class="readout"><span class="num" id="readNum">–</span><span class="unit">°N</span></div>
+      <div class="status" id="readStatus">Čeka prvo očitavanje</div>
+      <div class="fresh" id="readFresh">Nema zapisa</div>
+    </section>
+
+    <section class="card verdict" id="verdict" aria-live="polite">
+      <div class="stripe"></div>
+      <div class="body">
+        <span class="label">Mogu li da mu pišem?</span>
+        <span class="answer" id="vAnswer">Nepoznato</span>
+        <span class="why" id="vWhy">Nema merenja. Pitaj na sopstvenu odgovornost.</span>
+        <span class="note" id="vNote" hidden></span>
+      </div>
+    </section>
+
+    <section class="card lock" id="lock" aria-labelledby="lockTitle">
+      <div class="head"><h2 id="lockTitle">Kanali komunikacije</h2><span class="label">Prag 5,6 °N</span></div>
+      <div class="state"><i class="dot"></i><div><b id="lockState">Otvoreni</b><div class="hint" id="lockWhy">Svi kanali rade normalno.</div></div></div>
+      <div class="channels" id="channels"></div>
+      <button type="button" class="mailbtn" id="mailBtn"><div><b id="mailTitle">Jedan mejl</b><span id="mailSub">Jedini kanal koji ostaje otvoren kad se kanali zaključaju</span></div><span class="left" id="mailLeft">1</span></button>
+      <span class="fine">Golubovi pismonoše, dimni signali i „samo da te pitam nešto brzo” uživo takođe su suspendovani.</span>
+    </section>
+
+    <section class="card" aria-labelledby="phTitle">
+      <div style="display:grid;gap:4px">
+        <h2 id="phTitle">Prevodilac sa Stefanovog</h2>
+        <span class="hint" id="phHint">Stefan je upravo rekao nešto od ovoga? Dodirni i zabeleži. Svaka izjava pomera kazaljku.</span>
+      </div>
+      <div class="to-row"><span class="label">Kome je rekao</span><div class="chips" id="toChips"></div></div>
+      <div class="phrases" id="phrases"></div>
+      <button type="button" class="expand" id="phMore"></button>
+    </section>
+
+    <section class="card" aria-labelledby="mereTitle">
+      <div style="display:grid;gap:4px">
+        <h2 id="mereTitle">Mere smirivanja</h2>
+        <span class="hint">Šta je preduzeto. Izveštaj pokazuje šta stvarno pali.</span>
+      </div>
+      <div class="mere" id="mere"></div>
+    </section>
+  </main>
+
+  <!-- ================= UPIS ================= -->
+  <main class="view" id="view-upis" aria-label="Novo očitavanje" hidden>
+    <section class="card" id="ciCard" aria-labelledby="ciTitle">
+      <h2 id="ciTitle">Novo očitavanje</h2>
+      <div class="seg" role="group" aria-label="Ko upisuje">
+        <button type="button" id="modeSelf" aria-pressed="true">Ja sam Stefan</button>
+        <button type="button" id="modeReport" aria-pressed="false">Prijavljujem Stefana</button>
+      </div>
+      <div class="slider-row">
+        <div class="slider-head">
+          <span class="val" id="lvlVal">5</span>
+          <span class="desc" id="lvlDesc"></span>
+        </div>
+        <input type="range" id="lvl" min="0" max="10" step="1" value="5" aria-label="Nivo nadrkanosti od 0 do 10">
+        <div class="ticks" aria-hidden="true"><span>0</span><span>2</span><span>4</span><span>6</span><span>8</span><span>10</span></div>
+      </div>
+      <div class="slider-row">
+        <span class="label">Uzrok (može više)</span>
+        <div class="chips" id="causes"></div>
+      </div>
+      <div class="slider-row">
+        <span class="label">Beleška</span>
+        <textarea id="note" maxlength="280" placeholder="Opis incidenta, citat, dokazni materijal…" aria-label="Beleška"></textarea>
+      </div>
+      <button class="primary" id="submit" type="button">Upiši očitavanje</button>
+    </section>
+  </main>
+
+  <!-- ================= IZVEŠTAJ ================= -->
+  <main class="view" id="view-izvestaj" aria-label="Izveštaj" hidden>
+    <section class="card" aria-labelledby="statTitle">
+      <div class="head"><h2 id="statTitle">Izveštaj</h2><span class="label" id="statCount"></span></div>
+      <div class="stats">
+        <div class="stat"><span class="label">Dana bez incidenta</span><span class="big" id="sDays">–</span><span class="sub">Incident je očitavanje 8+</span></div>
+        <div class="stat"><span class="label">Prosek 7 dana</span><span class="big" id="sAvg">–</span><span class="sub" id="sAvgSub">°N</span></div>
+        <div class="stat"><span class="label">Indeks samoobmane</span><span class="big" id="sDelusion">–</span><span class="sub" id="sDelusionSub">Kolege minus Stefan, 30 dana</span></div>
+        <div class="stat"><span class="label">Prognoza za sutra</span><span class="big" id="sForecast">–</span><span class="sub" id="sForecastSub">Na osnovu istog dana u nedelji</span></div>
+      </div>
+      <div style="display:grid;gap:6px">
+        <span class="label">Dnevni prosek, 14 dana · isprekidano: prag incidenta</span>
+        <svg id="chart" viewBox="0 0 360 170" role="img" aria-label="Dnevni prosek nadrkanosti za 14 dana"></svg>
+      </div>
+    </section>
+
+    <section class="card" aria-labelledby="timeTitle">
+      <div class="head"><h3 id="timeTitle">Kad mu pisati</h3><span class="label">Prosek po delu dana</span></div>
+      <div class="claim"><q>Komunikacija sa mnom jedino ujutru, kad ima čovek malo energije.</q><span>Stefan, u grupi SIDEKICK</span></div>
+      <div class="periods" id="periods"></div>
+      <span class="verdict-line" id="timeVerdict"></span>
+    </section>
+
+    <section class="card" aria-labelledby="rareTitle">
+      <h3 id="rareTitle">Retki događaji</h3>
+      <div class="badges" id="badges"></div>
+    </section>
+
+    <section class="card" aria-labelledby="topTitle">
+      <h3 id="topTitle">Najčešće</h3>
+      <div style="display:grid;gap:8px"><span class="label">Uzroci</span><div class="bars" id="causeBars"></div></div>
+      <div style="display:grid;gap:8px"><span class="label">Izjave</span><div class="bars" id="phraseBars"></div></div>
+      <div style="display:grid;gap:8px"><span class="label">Ko ga najviše nervira</span><div class="bars" id="targetBars"></div></div>
+      <div style="display:grid;gap:8px"><span class="label">Mere</span><div class="bars" id="mereBars"></div></div>
+      <button type="button" class="ghost" id="shareReport">Pošalji izveštaj u grupu</button>
+    </section>
+  </main>
+
+  <!-- ================= DNEVNIK ================= -->
+  <main class="view" id="view-dnevnik" aria-label="Dnevnik" hidden>
+    <section class="card" aria-labelledby="logTitle">
+      <h2 id="logTitle">Dnevnik smene</h2>
+      <div class="chips" role="group" aria-label="Filter" id="filters"></div>
+      <div class="log" id="log"></div>
+      <button type="button" class="more" id="more" hidden>Prikaži starije</button>
+    </section>
+
+    <section class="card" aria-labelledby="dataTitle">
+      <div style="display:grid;gap:4px">
+        <h3 id="dataTitle">Podaci i telefon</h3>
+        <span class="hint">Zapisi se čuvaju samo na ovom telefonu. Da biste imali iste podatke, jedan izveze fajl i pošalje ga u grupu, a ostali ga uvezu. Uvoz spaja zapise i ne briše postojeće.</span>
+      </div>
+      <div class="slider-row">
+        <span class="label">Ko koristi ovaj telefon</span>
+        <button type="button" class="ghost" id="whoBtn" style="text-align:left"></button>
+      </div>
+      <label class="slider-row" for="stefanMail">
+        <span class="label">Stefanov mejl (za jedini dozvoljeni kanal)</span>
+        <input type="text" id="stefanMail" inputmode="email" autocomplete="off" placeholder="stefan@primer.com">
+      </label>
+      <div class="row">
+        <button type="button" class="ghost" id="exportBtn">Izvezi podatke</button>
+        <button type="button" class="ghost" id="importBtn">Uvezi podatke</button>
+      </div>
+      <input type="file" id="importFile" accept="application/json,.json" hidden>
+      <div class="hint" id="installHint" hidden></div>
+    </section>
+    <footer>Nadrkometar ne zamenjuje kafu. Kalibracija: jednom nedeljno, burekom. · v<span id="ver"></span></footer>
+  </main>
+</div>
+
+<nav class="tabbar" aria-label="Navigacija">
+  <button class="tab" type="button" data-tab="stanje" aria-selected="true">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 17a8.5 8.5 0 0 1 17 0"/><path d="M12 17l4-5"/><circle cx="12" cy="17" r="1.2"/></svg>Stanje</button>
+  <button class="tab add" type="button" data-tab="upis" aria-selected="false">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>Upis</button>
+  <button class="tab" type="button" data-tab="izvestaj" aria-selected="false">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V11M11 20V5M17 20v-7M3 20h18"/></svg>Izveštaj</button>
+  <button class="tab" type="button" data-tab="dnevnik" aria-selected="false">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6h12M8 12h12M8 18h12"/><circle cx="4" cy="6" r=".8"/><circle cx="4" cy="12" r=".8"/><circle cx="4" cy="18" r=".8"/></svg>Dnevnik</button>
+</nav>
+
+<div class="snack" id="snack" role="status" aria-live="polite"><span class="msg" id="snackMsg"></span><button type="button" id="snackUndo" hidden>Poništi</button></div>
+
+<div class="sheet" id="whoSheet" hidden>
+  <div class="panel" role="dialog" aria-modal="true" aria-labelledby="whoTitle">
+    <div style="display:grid;gap:4px">
+      <h2 id="whoTitle">Ko drži ovaj telefon?</h2>
+      <span class="hint">Da bi se u dnevniku videlo ko je šta prijavio. Menja se kasnije u Dnevniku.</span>
+    </div>
+    <div class="who" id="whoList"></div>
+    <div class="slider-row">
+      <span class="label">Neko drugi</span>
+      <input type="text" id="whoOther" maxlength="24" placeholder="Upiši ime" autocomplete="nickname">
+    </div>
+    <button type="button" class="primary" id="whoSave">Sačuvaj</button>
+  </div>
+</div>
+
+<div class="sheet" id="mailSheet" hidden>
+  <div class="panel" role="dialog" aria-modal="true" aria-labelledby="mailSheetTitle">
+    <div style="display:grid;gap:4px">
+      <h2 id="mailSheetTitle">Jedini dozvoljeni mejl</h2>
+      <span class="hint">Imaš pravo na tačno jedan. Biraj reči.</span>
+    </div>
+    <label class="slider-row" for="mailSubject"><span class="label">Naslov</span><input type="text" id="mailSubject" maxlength="120"></label>
+    <label class="slider-row" for="mailBody"><span class="label">Poruka</span><textarea id="mailBody" rows="8"></textarea></label>
+    <div class="row">
+      <button type="button" class="ghost" id="mailCancel">Odustani</button>
+      <button type="button" class="primary" id="mailSend">Pošalji mejl</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(() => {
+  const VERSION = "1.3";
+  const LEVELS = [
+    "Budistički monah", "Iznenađujuće prijatan", "Podnošljiv", "Blago mrgodan", "Uzdiše bez razloga",
+    "Odgovara jednom rečju", "Sve shvata levo", "„Nisam nervozan, super sam”", "Ne prilazi bez kafe",
+    "Evakuisati kancelariju", "Nuklearni Mačak",
+  ];
+  const VERDICTS = [
+    { max: 2, answer: "Da", why: "Slobodno. Dobar trenutak i za povišicu." },
+    { max: 4, answer: "Da, ali kratko", why: "Bez viceva i bez reči „samo brzo”." },
+    { max: 6, answer: "Samo pismeno", why: "Jedno pitanje, jasno formulisano. Ne pominji rokove." },
+    { max: 8, answer: "Samo uz kafu", why: "Ili burek. Klijente i lekare drži na distanci." },
+    { max: 10, answer: "Ne. Odloži za sutra", why: "Sastanak prebaciti. Ne dirati ništa na njegovom stolu." },
+  ];
+  const CAUSES = ["Nije popio kafu", "Klijenti", "Lekari", "Nešto ne radi", "Saobraćaj", "Gladan", "Nije spavao",
+    "Kućna situacija (nepotvrđeno)", "Mi (kolege)", "Shvatio nešto levo", "Bez ikakvog razloga"];
+  const PHRASES = [
+    { id: "nisam", text: "Nisam nervozan, super sam", tr: "Nervozan je.", level: 7, denial: true },
+    { id: "super", text: "Sve super za tvoju info", tr: "Ništa nije super.", level: 6, denial: true },
+    { id: "bzvze", text: "Bzvze", tr: "Ne želi da priča o tome.", level: 5 },
+    { id: "nepitaj", text: "Bolje i ne pitaj", tr: "Pitaj kasnije. Mnogo kasnije.", level: 7 },
+    { id: "meljes", text: "Majke mi samo nešto melješ", tr: "U pravu si, ali neće priznati.", level: 8, denial: true },
+    { id: "govna", text: "Mnogo jedeš govna ti", tr: "Pogođen je.", level: 8 },
+    { id: "nepotrebno", text: "Nepotrebno ti pričaš", tr: "Potrebno je, ali ne sad.", level: 7 },
+    { id: "lose", text: "Haha pa šta sam ti loše reko", tr: "Zna tačno šta je loše rekao.", level: 6 },
+    { id: "lekari", text: "Da završimo sa lekarima pa pričamo", tr: "Klijenti su ga iscrpeli.", level: 6 },
+    { id: "bezi", text: "Beži tamo", tr: "Razgovor je završen.", level: 7 },
+    { id: "tezak", text: "Kolko si ti težak čovek", tr: "Projekcija. Klasična.", level: 8 },
+    { id: "opservacije", text: "Tvoje opservacije nisu uopšte na mestu", tr: "Opservacije su potpuno na mestu.", level: 8, denial: true },
+    { id: "prvoti", text: "Prvo ti", tr: "Zna da je onaj drugi u pravu.", level: 7 },
+    { id: "ujutru", text: "Sa mnom samo ujutru, kad imam energije", tr: "Posle podne je zatvoren za saradnju.", level: 7 },
+    { id: "odmoran", text: "Odmoran, ovako teško", tr: "Nije odmoran i to je sada tvoj problem.", level: 7 },
+    { id: "smeh", text: "A ovaj se javlja za smeh", tr: "Primetio je da se svi smeju.", level: 7 },
+    { id: "boze", text: "Bože svašta", tr: "Pogođen je, glumi iznenađenje.", level: 6 },
+    { id: "dosada", text: "Taman ubijam dosadu", tr: "Ne ubija dosadu nego nas.", level: 6 },
+    { id: "ajde", text: "Ajde", tr: "Nije „ajde”.", level: 6 },
+    { id: "gile", text: "Tako i moj ujka Gile", tr: "Prešao na porodične anegdote. Tema zatvorena.", level: 5 },
+    { id: "izvini", text: "Izvini", tr: "Retka pojava. Zabeležiti za istoriju.", level: 3, rare: true },
+    { id: "haha", text: "Hahahaha", tr: "Zezanje radi. Imamo dokaz.", level: 2, rare: true },
+  ];
+  const RARE_MSG = { izvini: "Izvinjenje zabeleženo. Istorijski trenutak.", haha: "Smeh zabeležen. Zezanje i dalje jedino pali." };
+  const TARGETS = [["Joca", "Joci"], ["David", "Davidu"]];
+  const PERIODS = [
+    { name: "Jutro", from: 6, to: 11 }, { name: "Podne", from: 11, to: 14 }, { name: "Popodne", from: 14, to: 18 },
+    { name: "Veče", from: 18, to: 24 }, { name: "Noć", from: 0, to: 6 },
+  ];
+  const PHRASES_SHOWN = 8;
+  const MERE = [
+    { id: "zezanje", name: "Zezanje", sub: "Jedino što sigurno pali" },
+    { id: "kafa", name: "Kafa", sub: "Klasična terapija" },
+    { id: "burek", name: "Burek", sub: "Teška artiljerija" },
+    { id: "pohvala", name: "Pohvala", sub: "Iskrena, po mogućstvu" },
+    { id: "mir", name: "Ostavljen na miru", sub: "Dokazano delotvorno" },
+    { id: "odlozen", name: "Sastanak odložen", sub: "Za sutra, kao i uvek" },
+  ];
+  const TEAM = [
+    { name: "Joca", sub: "prijavljuje" },
+    { name: "David", sub: "prijavljuje" },
+    { name: "Stefan", sub: "Mačak Fr" },
+  ];
+  const FILTERS = [["sve", "Sve"], ["merenja", "Merenja"], ["izjave", "Izjave"], ["mere", "Mere"]];
+  const LS_DATA = "nadrkometar.zapisi.v1";
+  const LS_NAME = "nadrkometar.ime";
+  const LS_TAB = "nadrkometar.tab";
+  const LS_MAIL = "nadrkometar.stefanMejl";
+  const LOCK_AT = 5.6;
+  const MAIL_WINDOW = 12 * 3600000;
+  const ICON = {
+    chat: '<path d="M4 18l1.3-3.6A7.5 7.5 0 1 1 8.6 17.7z"/>',
+    phone: '<path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/>',
+    hash: '<path d="M5 9h14M5 15h14M10 4l-2 16M16 4l-2 16"/>',
+    sms: '<rect x="3" y="5" width="18" height="12" rx="2"/><path d="M8 21l3-4"/>',
+    person: '<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',
+    camera: '<rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/>',
+    lock: '<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>',
+  };
+  const CHANNELS = [
+    { name: "WhatsApp", icon: "chat" }, { name: "Viber", icon: "phone" }, { name: "Slack", icon: "hash" },
+    { name: "Poziv i SMS", icon: "sms" }, { name: "Instagram", icon: "camera" }, { name: "Uživo", icon: "person" },
+  ];
+  const DAY = 86400000;
+  const WEEKDAYS = ["nedelja", "ponedeljak", "utorak", "sreda", "četvrtak", "petak", "subota"];
+  const WEIGHT = { self: 1, report: 0.8, izjava: 0.6 };
+
+  const $ = (id) => document.getElementById(id);
+  const lvlColorVar = (l) => l <= 2 ? "--ok" : l <= 4 ? "--warn" : l <= 6 ? "--signal" : l <= 8 ? "--hot" : "--crit";
+  const verdictFor = (l) => VERDICTS.find((v) => l <= v.max);
+  const phraseById = (id) => PHRASES.find((p) => p.id === id);
+  const meraById = (id) => MERE.find((m) => m.id === id);
+  const buzz = () => { try { navigator.vibrate && navigator.vibrate(12); } catch {} };
+
+  let entries = [];
+  let mode = "self";
+  const picked = new Set();
+  let shown = 30;
+  let filter = "sve";
+  let target = "";
+  let phrasesOpen = false;
+
+  /* ---------- Storage (samo ovaj telefon) ---------- */
+  const lsGet = (k, fallback) => { try { const v = localStorage.getItem(k); return v == null ? fallback : v; } catch { return fallback; } };
+  const lsSet = (k, v) => { try { localStorage.setItem(k, v); return true; } catch { return false; } };
+  const sortDesc = (list) => list.sort((a, b) => b.at.localeCompare(a.at));
+  const isLevel = (l) => Number.isInteger(l) && l >= 0 && l <= 10;
+  const isValid = (e) => e && typeof e.id === "string" && typeof e.at === "string" && !isNaN(Date.parse(e.at)) && (
+    e.kind === "mera" ? typeof e.mera === "string" :
+    e.kind === "mejl" ? typeof e.subject === "string" :
+    e.kind === "izjava" ? typeof e.phrase === "string" && isLevel(e.level) && (e.to == null || typeof e.to === "string") :
+    (e.kind === "self" || e.kind === "report") && isLevel(e.level));
+  function load() {
+    try { const l = JSON.parse(lsGet(LS_DATA, "[]")); entries = sortDesc(Array.isArray(l) ? l.filter(isValid) : []); } catch { entries = []; }
+  }
+  function save() { if (!lsSet(LS_DATA, JSON.stringify(entries))) snack("Čuvanje nije uspelo. Proveri da li je Safari u privatnom režimu.", { bad: true }); }
+  const newId = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+  function add(e) { const id = newId(); entries.unshift({ id, at: new Date().toISOString(), by: myName(), ...e }); sortDesc(entries); save(); renderAll(); buzz(); return id; }
+  function remove(id) { entries = entries.filter((e) => e.id !== id); save(); renderAll(); }
+  const myName = () => lsGet(LS_NAME, "").trim();
+  const iAmStefan = () => /^stefan$/i.test(myName());
+
+  window.addEventListener("storage", (ev) => { if (ev.key === LS_DATA) { load(); renderAll(); } });
+  document.addEventListener("visibilitychange", () => { if (!document.hidden) { renderTop(); renderLock(); } });
+
+  /* ---------- Snackbar ---------- */
+  let snackTimer;
+  function snack(msg, { undo, bad } = {}) {
+    const s = $("snack");
+    $("snackMsg").textContent = msg;
+    s.classList.toggle("bad", !!bad);
+    const u = $("snackUndo");
+    u.hidden = !undo;
+    u.onclick = undo ? () => { undo(); s.classList.remove("show"); } : null;
+    s.classList.add("show");
+    clearTimeout(snackTimer);
+    snackTimer = setTimeout(() => s.classList.remove("show"), undo ? 5000 : 3500);
+  }
+
+  /* ---------- Tabs ---------- */
+  const TABS = ["stanje", "upis", "izvestaj", "dnevnik"];
+  function showTab(t, { scroll = true } = {}) {
+    if (!TABS.includes(t)) t = "stanje";
+    TABS.forEach((x) => { $("view-" + x).hidden = x !== t; });
+    document.querySelectorAll(".tab").forEach((b) => b.setAttribute("aria-selected", b.dataset.tab === t));
+    lsSet(LS_TAB, t);
+    if (scroll) window.scrollTo(0, 0);
+  }
+  document.querySelectorAll(".tab").forEach((b) => b.addEventListener("click", () => showTab(b.dataset.tab)));
+
+  /* ---------- Gauge ---------- */
+  const polar = (deg, r) => { const a = (deg - 180) * Math.PI / 180; return [200 + r * Math.cos(a), 200 + r * Math.sin(a)]; };
+  const arcPath = (from, to, r) => {
+    const [x1, y1] = polar(from, r), [x2, y2] = polar(to, r);
+    return `M${x1.toFixed(1)},${y1.toFixed(1)} A${r},${r} 0 0 1 ${x2.toFixed(1)},${y2.toFixed(1)}`;
+  };
+  function drawGauge() {
+    const zones = [[0, 2.5, "#4fb46d"], [2.5, 4.5, "#e8bb2c"], [4.5, 6.5, "#f0932b"], [6.5, 8.5, "#ef6a41"], [8.5, 10, "#e0443a"]];
+    $("arcs").innerHTML = zones.map(([a, b, c]) => `<path d="${arcPath(a * 18 + .6, b * 18 - .6, 160)}" stroke="${c}" stroke-width="20" fill="none"></path>`).join("");
+    let t = "";
+    for (let i = 0; i <= 20; i++) {
+      const deg = i * 9, major = i % 2 === 0;
+      const [x1, y1] = polar(deg, major ? 136 : 141), [x2, y2] = polar(deg, 147);
+      t += `<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="#6b747d" stroke-width="${major ? 2 : 1}"></line>`;
+      if (major) { const [lx, ly] = polar(deg, 184); t += `<text x="${lx.toFixed(1)}" y="${(ly + 4).toFixed(1)}" fill="#c7cdd3" font-size="12" text-anchor="middle">${i / 2}</text>`; }
+    }
+    $("ticks").innerHTML = t;
+  }
+  const setMarker = (v) => { $("marker").style.transform = `rotate(${(v == null ? 0 : v) * 18 - 90}deg)`; };
+
+  /* ---------- Derived numbers ---------- */
+  const readings = () => entries.filter((e) => e.kind === "self" || e.kind === "report" || e.kind === "izjava");
+  function currentReading() {
+    const r = readings();
+    if (!r.length) return null;
+    const windowStart = new Date(r[0].at).getTime() - 3 * 3600000;
+    const recent = r.filter((e) => new Date(e.at).getTime() >= windowStart);
+    let wsum = 0, sum = 0;
+    recent.forEach((e, i) => { const w = WEIGHT[e.kind] / (i + 1); wsum += w; sum += e.level * w; });
+    return { value: Math.round((sum / wsum) * 10) / 10, at: r[0].at, count: recent.length };
+  }
+  const avg = (arr) => arr.length ? arr.reduce((a, b) => a + b, 0) / arr.length : null;
+  const dayKey = (d) => { const x = new Date(d); return `${x.getFullYear()}-${x.getMonth()}-${x.getDate()}`; };
+  const fmt1 = (n) => n == null ? "–" : n.toFixed(1).replace(".", ",");
+  function ago(iso) {
+    const s = (Date.now() - new Date(iso).getTime()) / 1000;
+    if (s < 60) return "upravo sada";
+    if (s < 3600) return `pre ${Math.floor(s / 60)} min`;
+    if (s < 86400) return `pre ${Math.floor(s / 3600)} h`;
+    const d = Math.floor(s / 86400);
+    return d === 1 ? "juče" : `pre ${d} dana`;
+  }
+  const stamp = (iso) => new Date(iso).toLocaleString("sr-Latn-RS", { weekday: "short", day: "numeric", month: "numeric", hour: "2-digit", minute: "2-digit" });
+  const who = (e) => e.by || "neko iz firme";
+  const ageMs = (e) => Date.now() - new Date(e.at).getTime();
+
+  function computeStats() {
+    const r = readings(), now = Date.now();
+    const lastIncident = r.find((e) => e.level >= 8);
+    const days = !r.length ? null : Math.floor((now - new Date((lastIncident || r[r.length - 1]).at).getTime()) / DAY);
+    const within = (e, from, to) => { const t = ageMs(e); return t >= from && t < to; };
+    const weekL = r.filter((e) => within(e, 0, 7 * DAY)).map((e) => e.level);
+    const prevWeek = avg(r.filter((e) => within(e, 7 * DAY, 14 * DAY)).map((e) => e.level));
+    const month = r.filter((e) => within(e, 0, 30 * DAY));
+    const selfA = avg(month.filter((e) => e.kind === "self").map((e) => e.level));
+    const othersA = avg(month.filter((e) => e.kind !== "self").map((e) => e.level));
+    const delusion = selfA != null && othersA != null ? othersA - selfA : null;
+    const tomorrow = new Date(now + DAY).getDay();
+    const sameDay = r.filter((e) => new Date(e.at).getDay() === tomorrow).map((e) => e.level);
+    const forecast = avg(sameDay.length >= 2 ? sameDay : r.map((e) => e.level));
+    return { days, week: avg(weekL), weekN: weekL.length, prevWeek, delusion, tomorrow, forecast };
+  }
+
+  /* ---------- Render: Stanje ---------- */
+  function renderTop() {
+    const cur = currentReading();
+    const plate = document.querySelector(".plate");
+    const face = $("face");
+    if (!cur) {
+      setMarker(null);
+      face.dataset.band = "none";
+      face.style.setProperty("--tint", 0);
+      $("readNum").textContent = "–";
+      $("readStatus").textContent = "Čeka prvo očitavanje";
+      $("readFresh").textContent = "Upiši prvo merenje u tabu Upis";
+      $("vAnswer").textContent = "Nepoznato";
+      $("vWhy").textContent = "Nema merenja. Pitaj na sopstvenu odgovornost.";
+      $("verdict").style.removeProperty("--lvl");
+      $("vNote").hidden = true;
+      plate.style.removeProperty("--lvl");
+      return;
+    }
+    const lv = Math.round(cur.value);
+    const color = `var(${lvlColorVar(lv)})`;
+    setMarker(cur.value);
+    face.dataset.band = lv <= 2 ? "calm" : lv <= 6 ? "mid" : lv <= 8 ? "hot" : "boom";
+    face.style.setProperty("--tint", (Math.max(0, (cur.value - 4.5) / 5.5) * 0.78).toFixed(2));
+    $("readNum").textContent = fmt1(cur.value);
+    $("readStatus").textContent = LEVELS[lv].replace(/[„”]/g, "");
+    plate.style.setProperty("--lvl", color);
+    const stale = ageMs(cur) > 12 * 3600000;
+    $("readFresh").textContent = `Poslednje očitavanje ${ago(cur.at)}` + (cur.count > 1 ? ` · ${cur.count} merenja u 3 h` : "") + (stale ? " · podatak je zastareo" : "");
+    const v = verdictFor(lv);
+    $("vAnswer").textContent = v.answer;
+    $("vWhy").textContent = v.why;
+    $("verdict").style.setProperty("--lvl", color);
+    const h = new Date().getHours();
+    $("vNote").hidden = !(h >= 14 || h < 6) || lv <= 2;
+    $("vNote").textContent = "Napomena: posle podne važi Stefanovo pravilo „samo ujutru, kad ima čovek malo energije”.";
+  }
+
+  /* ---------- Render: Izveštaj ---------- */
+  function renderStats() {
+    const s = computeStats();
+    $("statCount").textContent = `${entries.length} zapisa`;
+    $("sDays").textContent = s.days == null ? "–" : s.days;
+    $("sAvg").textContent = fmt1(s.week);
+    $("sAvgSub").textContent = s.week != null && s.prevWeek != null
+      ? `${s.week > s.prevWeek ? "▲" : s.week < s.prevWeek ? "▼" : "="} ${fmt1(Math.abs(s.week - s.prevWeek))} u odnosu na prošlu nedelju`
+      : `${s.weekN} očitavanja`;
+    if (s.delusion != null) {
+      $("sDelusion").textContent = (s.delusion > 0 ? "+" : "") + fmt1(s.delusion);
+      $("sDelusionSub").textContent = s.delusion > 1 ? "Stefan sebe vidi blaže nego ostali" : s.delusion < -1 ? "Stefan je strožiji prema sebi od kolega" : "Stefan i kolege se slažu";
+    } else {
+      $("sDelusion").textContent = "–";
+      $("sDelusionSub").textContent = "Treba bar jedna samoprocena i jedna prijava";
+    }
+    $("sForecast").textContent = fmt1(s.forecast);
+    $("sForecastSub").textContent = s.forecast == null ? "Nema dovoljno podataka" : `Sutra je ${WEEKDAYS[s.tomorrow]}: ${verdictFor(Math.round(s.forecast)).answer.toLowerCase()}`;
+    renderChart(readings());
+    renderBadges(s);
+    renderBars("causeBars", readings().flatMap((e) => e.causes || []), "Još nema zabeleženih uzroka");
+    renderBars("phraseBars", entries.filter((e) => e.kind === "izjava").map((e) => "„" + ((phraseById(e.phrase) || {}).text || e.phrase) + "”"), "Još nijedna izjava");
+    renderBars("targetBars", entries.filter((e) => e.kind === "izjava" && e.to).map((e) => e.to), "Izaberi „Kome je rekao” kad beležiš izjavu");
+    renderPeriods();
+    renderBars("mereBars", entries.filter((e) => e.kind === "mera").map((e) => (meraById(e.mera) || {}).name || e.mera), "Još nijedna mera nije preduzeta");
+  }
+
+  function renderBadges(s) {
+    const izjave = entries.filter((e) => e.kind === "izjava");
+    const sorry = izjave.filter((e) => e.phrase === "izvini");
+    const denials = izjave.filter((e) => (phraseById(e.phrase) || {}).denial && ageMs(e) < 7 * DAY);
+    const postponed = entries.filter((e) => e.kind === "mera" && e.mera === "odlozen");
+    const admitted = entries.filter((e) => e.kind === "self" && e.level >= 7);
+    const byDay = {};
+    readings().forEach((e) => { (byDay[dayKey(e.at)] = byDay[dayKey(e.at)] || []).push(e.level); });
+    const zenDays = Object.values(byDay).filter((l) => avg(l) <= 2).length;
+    const list = [
+      { n: sorry.length, name: "Izvinjenja", sub: sorry.length ? `Poslednje ${ago(sorry[0].at)}` : "Još se čeka prvo", on: sorry.length > 0 },
+      { n: denials.length, name: "Poricanja ove nedelje", sub: "„Nisam nervozan” i srodne izjave", on: false },
+      { n: admitted.length, name: "Priznanja", sub: "Samoprocena 7 ili više. Hrabro.", on: admitted.length > 0 },
+      { n: postponed.length, name: "Odloženi sastanci", sub: "Za sutra, zbog raspoloženja", on: false },
+      { n: izjave.filter((e) => e.phrase === "haha").length, name: "Smejao se", sub: "Zabeleženo „Hahahaha”", on: izjave.some((e) => e.phrase === "haha") },
+      { n: izjave.filter((e) => e.phrase === "bezi").length, name: "Poslat da beži", sub: "„Beži tamo”, ukupno", on: false },
+      { n: zenDays, name: "Zen dani", sub: "Dnevni prosek 2 ili manje", on: zenDays > 0 },
+      { n: s.days == null ? "–" : s.days, name: "Niz bez incidenta", sub: "Tekući niz, u danima", on: (s.days || 0) >= 7 },
+    ];
+    const el = $("badges");
+    el.textContent = "";
+    list.forEach((b) => {
+      const d = document.createElement("div");
+      d.className = "badge" + (b.on ? " on" : "");
+      d.innerHTML = `<span class="n"></span><b></b><span></span>`;
+      d.children[0].textContent = b.n; d.children[1].textContent = b.name; d.children[2].textContent = b.sub;
+      el.appendChild(d);
+    });
+  }
+
+  function renderPeriods() {
+    const r = readings();
+    const rows = PERIODS.map((p) => {
+      const l = r.filter((e) => { const h = new Date(e.at).getHours(); return h >= p.from && h < p.to; }).map((e) => e.level);
+      return { ...p, v: avg(l), n: l.length };
+    });
+    const withData = rows.filter((x) => x.v != null);
+    const best = withData.length ? withData.reduce((a, b) => (b.v < a.v ? b : a)) : null;
+    const el = $("periods");
+    el.textContent = "";
+    rows.forEach((x) => {
+      const row = document.createElement("div");
+      row.className = "period" + (best && x === best && withData.length > 1 ? " best" : "");
+      row.innerHTML = `<span></span><div class="track"><div class="fill"></div></div><span class="n"></span>`;
+      row.children[0].textContent = x.name;
+      const hrs = document.createElement("small"); hrs.textContent = `${x.from}–${x.to}h`; row.children[0].appendChild(hrs);
+      const fill = row.querySelector(".fill");
+      fill.style.width = x.v == null ? "0" : `${Math.max(3, x.v * 10)}%`;
+      if (x.v != null) fill.style.background = `var(${lvlColorVar(Math.round(x.v))})`;
+      row.children[2].textContent = x.v == null ? "–" : fmt1(x.v);
+      el.appendChild(row);
+    });
+    const morning = rows[0];
+    let verdict = "Premalo podataka. Treba bar par merenja u različito doba dana.";
+    if (withData.length > 1 && morning.v != null) {
+      verdict = best === morning ? `Podaci potvrđuju: ujutru je najmirniji (${fmt1(morning.v)} °N).`
+        : `Podaci ga demantuju: najmirniji je ${best.name.toLowerCase()} (${fmt1(best.v)} °N), a ne jutro (${fmt1(morning.v)} °N).`;
+    } else if (withData.length > 1) {
+      verdict = `Nema jutarnjih merenja. Zasad je najmirniji ${best.name.toLowerCase()} (${fmt1(best.v)} °N).`;
+    }
+    $("timeVerdict").textContent = verdict;
+  }
+
+  function renderChart(r) {
+    const W = 360, H = 170, L = 20, R = 4, T = 14, B = 22;
+    const today = new Date(); today.setHours(0, 0, 0, 0);
+    const days = [];
+    for (let i = 13; i >= 0; i--) {
+      const d = new Date(today.getTime() - i * DAY);
+      days.push({ d, v: avg(r.filter((e) => dayKey(e.at) === dayKey(d)).map((e) => e.level)) });
+    }
+    const x = (i) => L + (i + 0.5) * ((W - L - R) / 14);
+    const y = (v) => T + (1 - v / 10) * (H - T - B);
+    const bw = (W - L - R) / 14 * 0.62;
+    let s = "";
+    [0, 5, 10].forEach((g) => { s += `<line x1="${L}" x2="${W - R}" y1="${y(g)}" y2="${y(g)}" stroke="var(--line)" stroke-width="1"></line><text x="${L - 6}" y="${y(g) + 3}" text-anchor="end">${g}</text>`; });
+    s += `<line x1="${L}" x2="${W - R}" y1="${y(8)}" y2="${y(8)}" stroke="var(--crit)" stroke-dasharray="3 4" stroke-width="1"></line><text x="${L - 6}" y="${y(8) + 3}" text-anchor="end" style="fill:var(--crit)">8</text>`;
+    days.forEach((d, i) => {
+      if (d.v != null) {
+        const h = Math.max(2, y(0) - y(d.v));
+        s += `<rect x="${(x(i) - bw / 2).toFixed(1)}" y="${(y(0) - h).toFixed(1)}" width="${bw.toFixed(1)}" height="${h.toFixed(1)}" rx="2" fill="var(${lvlColorVar(Math.round(d.v))})"><title>${d.d.toLocaleDateString("sr-Latn-RS")}: ${fmt1(d.v)} °N</title></rect>`;
+      } else {
+        s += `<rect x="${(x(i) - bw / 2).toFixed(1)}" y="${y(0) - 2}" width="${bw.toFixed(1)}" height="2" fill="var(--line)"></rect>`;
+      }
+      if (i % 3 === 1 || i === 13) s += `<text x="${x(i).toFixed(1)}" y="${H - 6}" text-anchor="middle">${i === 13 ? "danas" : d.d.getDate() + "."}</text>`;
+    });
+    $("chart").innerHTML = s;
+  }
+
+  function renderBars(id, list, emptyText) {
+    const counts = {};
+    list.forEach((c) => { counts[c] = (counts[c] || 0) + 1; });
+    const rows = Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 5);
+    const el = $(id);
+    el.textContent = "";
+    if (!rows.length) { const sp = document.createElement("span"); sp.className = "hint"; sp.textContent = emptyText; el.appendChild(sp); return; }
+    const max = rows[0][1];
+    rows.forEach(([name, n]) => {
+      const row = document.createElement("div");
+      row.className = "bar";
+      row.innerHTML = `<span></span><div class="track"><div class="fill" style="width:${(n / max) * 100}%"></div></div><span class="n">${n}</span>`;
+      row.firstChild.textContent = name;
+      el.appendChild(row);
+    });
+  }
+
+  /* ---------- Render: Dnevnik ---------- */
+  const matchesFilter = (e) => filter === "sve" || (filter === "merenja" && (e.kind === "self" || e.kind === "report")) ||
+    (filter === "izjave" && e.kind === "izjava") || (filter === "mere" && (e.kind === "mera" || e.kind === "mejl"));
+  function renderLog() {
+    const el = $("log");
+    el.textContent = "";
+    const list = entries.filter(matchesFilter);
+    if (!list.length) {
+      el.innerHTML = `<div class="empty"><b>${entries.length ? "Ništa u ovom filteru" : "Dnevnik je prazan"}</b><span>${entries.length ? "Izaberi drugi filter." : "Kad neko upiše prvo očitavanje ili izjavu, ovde se pojavljuje ceo istorijat."}</span></div>`;
+      $("more").hidden = true;
+      return;
+    }
+    list.slice(0, shown).forEach((e) => {
+      const row = document.createElement("div");
+      row.className = "entry";
+      const lv = document.createElement("div");
+      const info = document.createElement("div");
+      info.style.minWidth = "0";
+      info.innerHTML = `<div class="what"></div><div class="meta"></div>`;
+      const addLine = (cls, text) => { const d = document.createElement("div"); d.className = cls; d.textContent = text; info.appendChild(d); };
+      if (e.kind === "mejl") {
+        lv.className = "lv tag";
+        lv.textContent = "mejl";
+        info.children[0].textContent = `Iskorišćen jedini mejl: „${e.subject}”`;
+        info.children[1].textContent = `${stamp(e.at)} · ${who(e)}`;
+      } else if (e.kind === "mera") {
+        lv.className = "lv tag";
+        lv.textContent = "mera";
+        info.children[0].textContent = (meraById(e.mera) || {}).name || e.mera;
+        info.children[1].textContent = `${stamp(e.at)} · ${who(e)}`;
+      } else {
+        lv.className = "lv";
+        lv.style.setProperty("--lvl", `var(${lvlColorVar(e.level)})`);
+        lv.textContent = e.level;
+        if (e.kind === "izjava") {
+          const p = phraseById(e.phrase) || { text: e.phrase, tr: "" };
+          info.children[0].textContent = `„${p.text}”`;
+          info.children[1].textContent = `${stamp(e.at)} · ${e.to ? "rekao " + (TARGETS.find((t) => t[0] === e.to) || [e.to, e.to])[1] : "izjava"}, zabeležio ${who(e)}`;
+          if (p.tr) addLine("tags", "Prevod: " + p.tr);
+        } else {
+          info.children[0].textContent = LEVELS[e.level];
+          info.children[1].textContent = `${stamp(e.at)} · ${e.kind === "self" ? "samoprocena" : "prijavio " + who(e)}`;
+          if (e.causes && e.causes.length) addLine("tags", "Uzrok: " + e.causes.join(", "));
+          if (e.note) addLine("note", e.note);
+        }
+      }
+      const del = document.createElement("button");
+      del.className = "del";
+      del.type = "button";
+      del.textContent = "obriši";
+      del.setAttribute("aria-label", "Obriši zapis");
+      del.addEventListener("click", () => {
+        if (!del.classList.contains("arm")) {
+          del.classList.add("arm"); del.textContent = "sigurno?";
+          setTimeout(() => { del.classList.remove("arm"); del.textContent = "obriši"; }, 3000);
+          return;
+        }
+        const copy = { ...e };
+        remove(e.id);
+        snack("Zapis obrisan.", { undo: () => { entries.push(copy); sortDesc(entries); save(); renderAll(); } });
+      });
+      row.append(lv, info, del);
+      el.appendChild(row);
+    });
+    $("more").hidden = list.length <= shown;
+  }
+
+  function renderWho() {
+    const n = myName();
+    $("whoBtn").textContent = n ? `${n} · promeni` : "Nije izabrano · izaberi";
+    $("phHint").textContent = iAmStefan()
+      ? "Ti si Stefan. Budi iskren i zabeleži šta si rekao. Svaka izjava pomera kazaljku."
+      : "Stefan je upravo rekao nešto od ovoga? Dodirni i zabeleži. Svaka izjava pomera kazaljku.";
+  }
+
+  /* ---------- Zaključavanje kanala ---------- */
+  const lastMail = () => entries.find((e) => e.kind === "mejl");
+  function lockState() {
+    const cur = currentReading();
+    const locked = !!cur && cur.value > LOCK_AT && ageMs(cur) < 12 * 3600000;
+    const m = lastMail();
+    const mailUsed = locked && !!m && ageMs(m) < MAIL_WINDOW;
+    return { cur, locked, mailUsed, m };
+  }
+  CHANNELS.forEach((c) => {
+    const b = document.createElement("button");
+    b.type = "button"; b.className = "channel";
+    b.innerHTML = `<svg viewBox="0 0 24 24" aria-hidden="true">${ICON[c.icon]}</svg><span></span><small></small>`;
+    b.children[1].textContent = c.name;
+    b.addEventListener("click", () => {
+      const { cur, locked } = lockState();
+      if (!locked) { snack(`${c.name} je otvoren. Piši slobodno, ali kratko.`); return; }
+      b.classList.remove("denied"); void b.offsetWidth; b.classList.add("denied"); buzz();
+      snack(`${c.name} je zaključan. Nadrkometar pokazuje ${fmt1(cur.value)} °N. Ostaje samo jedan mejl.`, { bad: true });
+    });
+    $("channels").appendChild(b);
+  });
+  function renderLock() {
+    const { cur, locked, mailUsed, m } = lockState();
+    $("lock").classList.toggle("on", locked);
+    $("lockState").textContent = locked ? "Zaključani" : "Otvoreni";
+    $("lockWhy").textContent = locked
+      ? `Nadrkometar je na ${fmt1(cur.value)} °N, iznad praga od 5,6. Otključava se kad padne ispod.`
+      : cur ? `Nivo ${fmt1(cur.value)} °N je ispod praga. Svi kanali rade.` : "Nema merenja. Kanali su otvoreni na sopstvenu odgovornost.";
+    document.querySelectorAll("#channels .channel").forEach((b) => {
+      b.querySelector("small").textContent = locked ? "zaključano" : "otvoreno";
+      b.setAttribute("aria-label", `${b.children[1].textContent}: ${locked ? "zaključano" : "otvoreno"}`);
+    });
+    $("mailBtn").hidden = !locked;
+    $("mailBtn").disabled = mailUsed;
+    $("mailLeft").textContent = mailUsed ? "0" : "1";
+    $("mailTitle").textContent = mailUsed ? "Mejl je iskorišćen" : "Preostao ti je jedan mejl";
+    $("mailSub").textContent = mailUsed
+      ? `Poslat ${ago(m.at)}. Sledeći kad nivo padne ispod 5,6 ili posle 12 sati.`
+      : "Jedini kanal koji ostaje otvoren. Dodirni da ga napišeš.";
+  }
+  function openMail() {
+    const { cur, locked, mailUsed } = lockState();
+    if (!locked || mailUsed) return;
+    $("mailSubject").value = "Jedno pitanje (jedino dozvoljeno)";
+    $("mailBody").value = `Poštovani Stefane,\n\nu skladu sa Protokolom o komunikaciji (Nadrkometar, očitavanje ${fmt1(cur.value)} °N), obraćam Vam se jedinim preostalim kanalom.\n\n[Ovde jedno pitanje. Jedno.]\n\nUnapred hvala na strpljenju.\n\nSrdačan pozdrav,\n${myName() || "Kolega"}`;
+    $("mailSheet").hidden = false;
+  }
+  $("mailBtn").addEventListener("click", openMail);
+  $("mailCancel").addEventListener("click", () => { $("mailSheet").hidden = true; });
+  $("mailSheet").addEventListener("click", (ev) => { if (ev.target === $("mailSheet")) $("mailSheet").hidden = true; });
+  $("mailSend").addEventListener("click", () => {
+    const subject = $("mailSubject").value.trim() || "Jedno pitanje";
+    const body = $("mailBody").value;
+    const to = lsGet(LS_MAIL, "").trim();
+    add({ kind: "mejl", subject: subject.slice(0, 120) });
+    $("mailSheet").hidden = true;
+    const a = document.createElement("a");
+    a.href = `mailto:${encodeURIComponent(to).replace(/%40/g, "@")}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    a.click();
+    snack(to ? "Mejl je spreman u aplikaciji za poštu. Jedini kanal je iskorišćen." : "Mejl je otvoren bez adrese; Stefanov mejl upiši u Dnevnik → Podaci. Kanal je iskorišćen.");
+  });
+  $("stefanMail").value = lsGet(LS_MAIL, "");
+  $("stefanMail").addEventListener("change", () => { lsSet(LS_MAIL, $("stefanMail").value.trim()); snack("Stefanov mejl je sačuvan."); });
+
+  function renderAll() { renderTop(); renderLock(); renderStats(); renderLog(); renderWho(); renderPhrases(); }
+
+  /* ---------- Stanje: izjave i mere ---------- */
+  TARGETS.forEach(([name, dative]) => {
+    const b = document.createElement("button");
+    b.type = "button"; b.className = "chip"; b.textContent = dative;
+    b.setAttribute("aria-pressed", "false");
+    b.addEventListener("click", () => {
+      target = target === name ? "" : name;
+      document.querySelectorAll("#toChips .chip").forEach((x) => x.setAttribute("aria-pressed", x === b && target === name));
+    });
+    $("toChips").appendChild(b);
+  });
+  // Najčešće izjave idu napred; retke uvek ostaju vidljive na kraju prvog reda
+  function renderPhrases() {
+    const counts = {};
+    entries.forEach((e) => { if (e.kind === "izjava") counts[e.phrase] = (counts[e.phrase] || 0) + 1; });
+    const common = PHRASES.filter((p) => !p.rare).map((p, i) => ({ p, i, n: counts[p.id] || 0 })).sort((a, b) => b.n - a.n || a.i - b.i).map((x) => x.p);
+    const rare = PHRASES.filter((p) => p.rare);
+    const list = phrasesOpen ? common.concat(rare) : common.slice(0, PHRASES_SHOWN - rare.length).concat(rare);
+    const el = $("phrases");
+    el.textContent = "";
+    list.forEach((p) => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "phrase" + (p.rare ? " rare" : "");
+      b.innerHTML = `<q></q><span></span>`;
+      b.children[0].textContent = p.text;
+      b.children[1].textContent = "Prevod: " + p.tr;
+      if (counts[p.id]) { const c = document.createElement("span"); c.className = "cnt"; c.textContent = `${counts[p.id]}×`; b.appendChild(c); }
+      b.addEventListener("click", () => {
+        const e = { kind: "izjava", phrase: p.id, level: p.level };
+        if (target) e.to = target;
+        const id = add(e);
+        snack(RARE_MSG[p.id] || `Zabeleženo. Prevod: ${p.tr}`, { undo: () => remove(id) });
+      });
+      el.appendChild(b);
+    });
+    $("phMore").textContent = phrasesOpen ? "Prikaži manje" : `Sve izjave (${PHRASES.length})`;
+  }
+  $("phMore").addEventListener("click", () => { phrasesOpen = !phrasesOpen; renderPhrases(); });
+  MERE.forEach((m) => {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.innerHTML = `<b></b><span></span>`;
+    b.children[0].textContent = m.name; b.children[1].textContent = m.sub;
+    b.addEventListener("click", () => {
+      const id = add({ kind: "mera", mera: m.id });
+      snack(`Mera zabeležena: ${m.name.toLowerCase()}.`, { undo: () => remove(id) });
+    });
+    $("mere").appendChild(b);
+  });
+
+  /* ---------- Upis ---------- */
+  function setLevelUI() {
+    const v = +$("lvl").value;
+    $("lvlVal").textContent = v;
+    $("lvlDesc").textContent = LEVELS[v];
+    $("ciCard").style.setProperty("--lvl", `var(${lvlColorVar(v)})`);
+  }
+  function setMode(m) {
+    mode = m;
+    $("modeSelf").setAttribute("aria-pressed", m === "self");
+    $("modeReport").setAttribute("aria-pressed", m === "report");
+    $("submit").textContent = m === "self" ? "Upiši očitavanje" : "Pošalji prijavu";
+    $("note").placeholder = m === "self" ? "Kako se osećaš, u jednoj rečenici…" : "Opis incidenta, citat, dokazni materijal…";
+  }
+  CAUSES.forEach((c) => {
+    const b = document.createElement("button");
+    b.type = "button"; b.className = "chip"; b.textContent = c;
+    b.setAttribute("aria-pressed", "false");
+    b.addEventListener("click", () => { picked.has(c) ? picked.delete(c) : picked.add(c); b.setAttribute("aria-pressed", picked.has(c)); });
+    $("causes").appendChild(b);
+  });
+  $("lvl").addEventListener("input", setLevelUI);
+  $("modeSelf").addEventListener("click", () => setMode("self"));
+  $("modeReport").addEventListener("click", () => setMode("report"));
+  $("submit").addEventListener("click", () => {
+    const level = +$("lvl").value;
+    const id = add({ kind: mode, level, causes: [...picked], note: $("note").value.trim().slice(0, 280), by: mode === "self" ? "Stefan" : myName() });
+    $("note").value = "";
+    picked.clear();
+    document.querySelectorAll("#causes .chip").forEach((b) => b.setAttribute("aria-pressed", "false"));
+    showTab("stanje");
+    snack(level >= 8 ? "Incident zabeležen. Brojač dana bez incidenta je na nuli." : "Očitavanje upisano.", { undo: () => remove(id) });
+  });
+
+  /* ---------- Dnevnik: filteri ---------- */
+  FILTERS.forEach(([k, name]) => {
+    const b = document.createElement("button");
+    b.type = "button"; b.className = "chip"; b.textContent = name;
+    b.setAttribute("aria-pressed", k === filter);
+    b.addEventListener("click", () => {
+      filter = k; shown = 30;
+      document.querySelectorAll("#filters .chip").forEach((x) => x.setAttribute("aria-pressed", x === b));
+      renderLog();
+    });
+    $("filters").appendChild(b);
+  });
+  $("more").addEventListener("click", () => { shown += 30; renderLog(); });
+
+  /* ---------- Ko drži telefon ---------- */
+  let whoPick = "";
+  function openWho() {
+    whoPick = myName();
+    const list = $("whoList");
+    list.textContent = "";
+    TEAM.forEach((t) => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.innerHTML = `<b></b><span></span>`;
+      b.children[0].textContent = t.name; b.children[1].textContent = t.sub;
+      b.setAttribute("aria-pressed", whoPick.toLowerCase() === t.name.toLowerCase());
+      b.addEventListener("click", () => {
+        whoPick = t.name; $("whoOther").value = "";
+        list.querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", x === b));
+      });
+      list.appendChild(b);
+    });
+    $("whoOther").value = TEAM.some((t) => t.name.toLowerCase() === whoPick.toLowerCase()) ? "" : whoPick;
+    $("whoSheet").hidden = false;
+  }
+  $("whoOther").addEventListener("input", () => {
+    whoPick = $("whoOther").value.trim();
+    $("whoList").querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", "false"));
+  });
+  $("whoSave").addEventListener("click", () => {
+    if (!whoPick) { snack("Izaberi ime ili upiši svoje.", { bad: true }); return; }
+    lsSet(LS_NAME, whoPick);
+    $("whoSheet").hidden = true;
+    setMode(iAmStefan() ? "self" : "report");
+    renderWho();
+    snack(`Ovaj telefon koristi ${whoPick}.`);
+  });
+  $("whoSheet").addEventListener("click", (ev) => { if (ev.target === $("whoSheet") && myName()) $("whoSheet").hidden = true; });
+  $("whoBtn").addEventListener("click", openWho);
+
+  /* ---------- Izvoz, uvoz, izveštaj ---------- */
+  $("exportBtn").addEventListener("click", async () => {
+    const payload = JSON.stringify({ app: "nadrkometar", version: 1, exportedAt: new Date().toISOString(), from: myName(), entries }, null, 1);
+    const d = new Date();
+    const slug = myName().toLowerCase().normalize("NFD").replace(/[^a-z0-9]+/g, "");
+    const name = `nadrkometar-${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}${slug ? "-" + slug : ""}.json`;
+    const file = new File([payload], name, { type: "application/json" });
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      try { await navigator.share({ files: [file], title: "Nadrkometar podaci" }); snack(`Izvezeno ${entries.length} zapisa.`); return; }
+      catch (e) { if (e && e.name === "AbortError") return; }
+    }
+    const url = URL.createObjectURL(file);
+    const a = document.createElement("a");
+    a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 5000);
+    snack(`Fajl ${name} je sačuvan.`);
+  });
+  $("importBtn").addEventListener("click", () => $("importFile").click());
+  $("importFile").addEventListener("change", async () => {
+    const f = $("importFile").files[0];
+    $("importFile").value = "";
+    if (!f) return;
+    try {
+      const data = JSON.parse(await f.text());
+      const list = Array.isArray(data) ? data : data && data.app === "nadrkometar" ? data.entries : null;
+      if (!Array.isArray(list)) throw new Error("format");
+      const have = new Set(entries.map((e) => e.id));
+      const fresh = list.filter((e) => isValid(e) && !have.has(e.id));
+      entries = sortDesc(entries.concat(fresh));
+      save(); renderAll();
+      snack(fresh.length ? `Uvezeno ${fresh.length} novih zapisa.` : "Nema novih zapisa, sve je već bilo ovde.");
+    } catch {
+      snack("Ovo nije Nadrkometar fajl. Izaberi .json fajl izvezen iz aplikacije.", { bad: true });
+    }
+  });
+  $("shareReport").addEventListener("click", async () => {
+    const cur = currentReading(), s = computeStats();
+    const lines = ["NADRKOMETAR · izveštaj"];
+    if (cur) {
+      const lv = Math.round(cur.value), v = verdictFor(lv);
+      lines.push(`Trenutno: ${fmt1(cur.value)} °N · ${LEVELS[lv]} (${ago(cur.at)})`, `Mogu li da mu pišem? ${v.answer}. ${v.why}`);
+    } else lines.push("Trenutno: nema očitavanja.");
+    if (s.days != null) lines.push(`Dana bez incidenta: ${s.days}`);
+    if (s.week != null) lines.push(`Prosek 7 dana: ${fmt1(s.week)} °N`);
+    if (s.delusion != null) lines.push(`Indeks samoobmane: ${s.delusion > 0 ? "+" : ""}${fmt1(s.delusion)}`);
+    lines.push(`Izvinjenja ukupno: ${entries.filter((e) => e.kind === "izjava" && e.phrase === "izvini").length}`);
+    if (s.forecast != null) lines.push(`Prognoza za sutra (${WEEKDAYS[s.tomorrow]}): ${fmt1(s.forecast)} °N`);
+    const text = lines.join("\n");
+    if (navigator.share) {
+      try { await navigator.share({ title: "Nadrkometar", text }); return; } catch (e) { if (e && e.name === "AbortError") return; }
+    }
+    try { await navigator.clipboard.writeText(text); snack("Izveštaj je kopiran. Nalepi ga u grupu."); }
+    catch { snack("Deljenje nije uspelo na ovom telefonu.", { bad: true }); }
+  });
+
+  /* ---------- Instalacija i ažuriranje ---------- */
+  const standalone = matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
+  if (!standalone) {
+    const ios = /iphone|ipad|ipod/i.test(navigator.userAgent);
+    $("installHint").hidden = false;
+    $("installHint").textContent = ios
+      ? "Instalacija: otvori u Safariju, pa Deli → „Dodaj na početni ekran”. Posle radi kao prava aplikacija, i bez interneta."
+      : "Instalacija: u Chrome meniju (⋮) izaberi „Instaliraj aplikaciju”. Posle radi i bez interneta.";
+  }
+  (function registerSW() {
+    if (!("serviceWorker" in navigator) || (location.protocol !== "https:" && location.hostname !== "localhost")) return;
+    const ready = (w) => {
+      if (document.querySelector(".upd")) return;
+      const b = document.createElement("button");
+      b.className = "upd"; b.type = "button";
+      b.innerHTML = "Nova verzija je spremna · <b>Osveži</b>";
+      b.addEventListener("click", () => { w.postMessage("skip"); b.remove(); });
+      document.body.appendChild(b);
+    };
+    navigator.serviceWorker.register("sw.js").then((reg) => {
+      if (reg.waiting && navigator.serviceWorker.controller) ready(reg.waiting);
+      reg.addEventListener("updatefound", () => {
+        const w = reg.installing;
+        if (w) w.addEventListener("statechange", () => { if (w.state === "installed" && navigator.serviceWorker.controller) ready(w); });
+      });
+      document.addEventListener("visibilitychange", () => { if (!document.hidden) reg.update().catch(() => {}); });
+    }).catch(() => {});
+    // Reload samo kad nova verzija zameni staru, ne pri prvoj instalaciji
+    const hadController = !!navigator.serviceWorker.controller;
+    let reloading = false;
+    navigator.serviceWorker.addEventListener("controllerchange", () => { if (reloading || !hadController) return; reloading = true; location.reload(); });
+  })();
+
+  /* ---------- Start ---------- */
+  $("ver").textContent = VERSION;
+  drawGauge();
+  setLevelUI();
+  setMode(myName() && !iAmStefan() ? "report" : "self");
+  load();
+  renderAll();
+  showTab(lsGet(LS_TAB, "stanje"), { scroll: false });
+  if (!myName()) openWho();
+  setInterval(() => { renderTop(); renderLock(); }, 60000);
+  // Traži od browsera da podatke ne briše (iOS/Android čuvaju ih trajno za instaliranu aplikaciju)
+  try { navigator.storage && navigator.storage.persist && navigator.storage.persist(); } catch {}
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,35 @@
+{
+ "app": "nadrkometar",
+ "version": 1,
+ "exportedAt": "2026-09-30T16:19:20.299Z",
+ "from": "David",
+ "entries": [
+  {
+   "id": "muob8utz471d58",
+   "kind": "mera",
+   "mera": "kafa",
+   "at": "2026-09-30T16:19:17.399Z",
+   "by": "David"
+  },
+  {
+   "id": "muob8u3li33j0u",
+   "kind": "self",
+   "level": 3,
+   "causes": [],
+   "note": "",
+   "at": "2026-09-30T16:19:16.449Z",
+   "by": "Stefan"
+  },
+  {
+   "id": "muob8taw9ua8g2",
+   "kind": "report",
+   "level": 9,
+   "causes": [
+    "Klijent"
+   ],
+   "note": "Pitao ga za fakturu.",
+   "at": "2026-09-30T16:19:15.415Z",
+   "by": "David"
+  }
+ ]
+}

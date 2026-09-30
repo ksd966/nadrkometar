@@ -1,0 +1,19 @@
+{
+  "name": "Nadrkometar",
+  "short_name": "Nadrkometar",
+  "description": "Merač Stefanovog raspoloženja: samoprocene, prijave kolega, mere smirivanja i statistika.",
+  "lang": "sr",
+  "dir": "ltr",
+  "start_url": "./?source=pwa",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#16191D",
+  "theme_color": "#16191D",
+  "categories": ["lifestyle", "entertainment"],
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
