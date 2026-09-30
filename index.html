@@ -166,7 +166,7 @@ button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 2px
 .lock .fine { font-size: .76rem; color: var(--muted); }
 
 .mere { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; }
-.mere button { border: 1px solid var(--line); background: transparent; border-radius: 8px; padding: 10px 12px; text-align: left; display: grid; gap: 2px; }
+.mere button { border: 1px solid var(--line); background: transparent; border-radius: 8px; padding: 10px 12px; text-align: left; display: grid; gap: 2px; align-content: start; }
 .mere button:active { border-color: var(--ok); transform: scale(.98); }
 .mere b { font-weight: 600; }
 .mere span { font-size: .76rem; color: var(--muted); }
@@ -454,7 +454,7 @@ footer { text-align: center; font-family: var(--mono); font-size: .68rem; color:
 
 <script>
 (() => {
-  const VERSION = "1.4";
+  const VERSION = "1.5";
   const LEVELS = [
     "Budistički monah", "Iznenađujuće prijatan", "Podnošljiv", "Blago mrgodan", "Uzdiše bez razloga",
     "Odgovara jednom rečju", "Sve shvata levo", "„Nisam nervozan, super sam”", "Ne prilazi bez kafe",
@@ -506,6 +506,12 @@ footer { text-align: center; font-family: var(--mono); font-size: .68rem; color:
     { id: "pohvala", name: "Pohvala", sub: "Iskrena, po mogućstvu" },
     { id: "mir", name: "Ostavljen na miru", sub: "Dokazano delotvorno" },
     { id: "odlozen", name: "Sastanak odložen", sub: "Za sutra, kao i uvek" },
+    { id: "buksna", name: "Buksna", sub: "Prirodni stabilizator" },
+    { id: "tusi", name: "Tusi", sub: "Samo u teoriji" },
+    { id: "mdma", name: "MDMA", sub: "Voli sve, na kratko" },
+    { id: "dizel", name: "10 l dizel", sub: "Taman do Siljegovca" },
+    { id: "siljegovac", name: "Povratna karta za dvoje do Siljegovca", sub: "Vikend na selu" },
+    { id: "zdravija", name: "Zdravi ja", sub: "Kad ništa drugo ne pali" },
   ];
   const FILTERS = [["sve", "Sve"], ["merenja", "Merenja"], ["izjave", "Izjave"], ["mere", "Mere"]];
   const LS_DATA = "nadrkometar.zapisi.v1";
@@ -992,7 +998,7 @@ footer { text-align: center; font-family: var(--mono); font-size: .68rem; color:
     b.children[0].textContent = m.name; b.children[1].textContent = m.sub;
     b.addEventListener("click", () => {
       const id = add({ kind: "mera", mera: m.id });
-      snack(`Mera zabeležena: ${m.name.toLowerCase()}.`, { undo: () => remove(id) });
+      snack(`Mera zabeležena: ${m.name}.`, { undo: () => remove(id) });
     });
     $("mere").appendChild(b);
   });

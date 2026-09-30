@@ -3,7 +3,7 @@
    Sve aplikacije na ksd966.github.io dele isti keš prostor, pa ovaj worker briše samo svoje stare keševe
    i sam vraća fajlove ako ih neka druga aplikacija obriše. */
 const PREFIX = "nadrkometar-";
-const CACHE = PREFIX + "1.4";
+const CACHE = PREFIX + "1.5";
 const CORE = ["./", "./index.html", "./manifest.webmanifest", "./fonts/fonts.css",
   "./fonts/Archivo-latin-65449f.woff2", "./fonts/Archivo-latin-ext-7301cd.woff2",
   "./fonts/BigShouldersDisplay-latin-caf8e2.woff2", "./fonts/BigShouldersDisplay-latin-ext-b0801e.woff2",
