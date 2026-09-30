@@ -3,7 +3,7 @@
    Sve aplikacije na ksd966.github.io dele isti keš prostor, pa ovaj worker briše samo svoje stare keševe
    i sam vraća fajlove ako ih neka druga aplikacija obriše. */
 const PREFIX = "nadrkometar-";
-const CACHE = PREFIX + "1.6";
+const CACHE = PREFIX + "1.6.1";
 const CORE = ["./", "./index.html", "./manifest.webmanifest", "./fonts/fonts.css",
   "./fonts/Archivo-latin-65449f.woff2", "./fonts/Archivo-latin-ext-7301cd.woff2",
   "./fonts/BigShouldersDisplay-latin-caf8e2.woff2", "./fonts/BigShouldersDisplay-latin-ext-b0801e.woff2",
@@ -21,11 +21,15 @@ self.addEventListener("fetch", (e) => {
   const r = e.request;
   const url = new URL(r.url);
   if (r.method !== "GET" || url.origin !== location.origin || !url.pathname.startsWith(new URL("./", self.registration.scope).pathname)) return;
+  // Stranica: prvo mreža (uvek najnovija verzija), sačuvana kopija samo bez interneta ili kad mreža kasni 3 s
   if (r.mode === "navigate") {
-    e.respondWith(caches.match("./index.html").then((c) => c || fetch(r).then((res) => {
+    const net = fetch(r, { cache: "no-store" }).then((res) => {
       if (res.ok) { const cl = res.clone(); caches.open(CACHE).then((k) => k.put("./index.html", cl)); }
       return res;
-    })));
+    });
+    const slow = new Promise((resolve) => setTimeout(resolve, 3000)).then(() => caches.match("./index.html"));
+    e.respondWith(Promise.race([net.catch(() => caches.match("./index.html")), slow.then((c) => c || net)])
+      .then((res) => res || net));
     return;
   }
   e.respondWith(caches.match(r, { ignoreSearch: true }).then((c) => c || fetch(r).then((res) => remember(r, res))));
